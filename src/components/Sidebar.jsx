@@ -4,7 +4,6 @@ import { AGENTS } from '../lib/agents'
 import { createChat, updateChatTitle, deleteChat, signOut } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
 import TokenBar from './TokenBar'
-import Logo from './Logo'
 import AgentIcon from './AgentIcon'
 import Modal from './Modal'
 
@@ -90,7 +89,7 @@ export default function Sidebar({
       `}>
         {/* Header */}
         <div className="p-5 flex items-center justify-between">
-          <Logo size="sidebar" dark />
+          <img src="/wordmark.png" alt="ColméIA Infantil" style={{ height: 28 }} className="object-contain" draggable={false} />
 
           <div className="flex items-center gap-1">
             {/* Search button */}

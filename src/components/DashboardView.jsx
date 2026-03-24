@@ -22,7 +22,7 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
   const recentChats = chats.slice(0, 3)
 
   return (
-    <div className="flex-1 flex items-center justify-center bg-bg-chat p-6 pt-16 md:p-6 overflow-y-auto">
+    <div className="flex-1 flex items-start md:items-center justify-center bg-bg-chat px-6 pt-6 pb-6 md:p-6 overflow-y-auto overflow-x-hidden">
       <div className="w-full max-w-2xl animate-slide-up">
         {/* Greeting */}
         <h2 className="text-2xl md:text-3xl font-semibold text-primary-600 mb-1 leading-tight">
