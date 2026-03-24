@@ -29,7 +29,7 @@ export default function LoginPage({ onSwitch }) {
     <div className="min-h-screen bg-bg-alternate flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-card w-full max-w-[420px] p-8 animate-fade-in">
         <div className="flex flex-col items-center mb-8">
-          <Logo size="lg" />
+          <Logo size="lg" dark />
           <p className="text-text-secondary mt-3 text-sm">
             Para iniciar preencha os dados abaixo.
           </p>

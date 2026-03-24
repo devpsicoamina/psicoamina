@@ -14,7 +14,7 @@ export default function App() {
     return (
       <div className="h-screen bg-bg-alternate flex items-center justify-center">
         <div className="text-center animate-fade-in">
-          <Logo size="lg" />
+          <Logo size="lg" dark />
           <div className="mt-6">
             <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto" />
           </div>
