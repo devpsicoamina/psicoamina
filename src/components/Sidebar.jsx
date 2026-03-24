@@ -90,7 +90,7 @@ export default function Sidebar({
       `}>
         {/* Header */}
         <div className="p-5 flex items-center justify-between">
-          <Logo size="sidebar" />
+          <Logo size="sidebar" dark />
 
           <div className="flex items-center gap-1">
             {/* Search button */}

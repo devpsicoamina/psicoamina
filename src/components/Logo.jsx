@@ -1,8 +1,8 @@
 export default function Logo({ size = 'md', dark = false }) {
   const sizes = {
     sm: { img: 48 },
-    md: { img: 100 },
-    lg: { img: 140 },
+    md: { img: 140 },
+    lg: { img: 200 },
     sidebar: { img: 44 },
   }
   const s = sizes[size] || sizes.md
