@@ -134,7 +134,7 @@ export default function Sidebar({
                       style={{ backgroundColor: agent.color + '15' }}>
                       <AgentIcon icon={agent.icon} size={16} style={{ color: agent.color }} className="flex-shrink-0" />
                     </div>
-                    <span className="text-sm font-medium text-primary-600 truncate">
+                    <span className="text-sm font-medium text-primary-600 leading-tight">
                       {agent.label}
                     </span>
                     <ChevronDown
