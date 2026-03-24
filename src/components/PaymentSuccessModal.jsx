@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { getPaymentPlan, clearPaymentParams } from '../lib/demo'
 import { PLAN_LIMITS } from '../lib/agents'
@@ -24,9 +25,7 @@ export default function PaymentSuccessModal({ open, onClose }) {
       <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md z-10 animate-slide-up p-8 text-center">
         {/* Success icon */}
         <div className="w-20 h-20 bg-accent-teal/10 rounded-full flex items-center justify-center mx-auto mb-5">
-          <svg className="w-10 h-10 text-accent-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
+          <Check className="w-10 h-10 text-accent-teal" strokeWidth={2.5} />
         </div>
 
         <h2 className="text-2xl font-bold text-text-primary mb-2">

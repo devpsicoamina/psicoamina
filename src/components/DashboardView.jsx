@@ -1,3 +1,4 @@
+import { ChevronRight } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { AGENTS, PLAN_LIMITS, CREDIT_LIMIT } from '../lib/agents'
 import AgentIcon from './AgentIcon'
@@ -105,9 +106,7 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
                       </p>
                       <p className="text-xs text-secondary">{agent?.label}</p>
                     </div>
-                    <svg className="w-4 h-4 text-secondary/30 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    <ChevronRight className="w-4 h-4 text-secondary/30 flex-shrink-0" />
                   </button>
                 )
               })}

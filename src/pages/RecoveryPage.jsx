@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Mail } from 'lucide-react'
 import { resetPassword } from '../lib/supabase'
 import Logo from '../components/Logo'
 
@@ -32,9 +33,7 @@ export default function RecoveryPage({ onSwitch }) {
         {sent ? (
           <div className="text-center animate-fade-in">
             <div className="w-20 h-20 bg-accent-teal/10 rounded-full flex items-center justify-center mx-auto mb-5">
-              <svg className="w-10 h-10 text-accent-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
+              <Mail className="w-10 h-10 text-accent-teal" />
             </div>
             <h2 className="text-xl font-bold text-text-primary mb-2">Email enviado!</h2>
             <p className="text-text-secondary mb-8">

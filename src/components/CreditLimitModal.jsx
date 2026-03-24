@@ -1,3 +1,4 @@
+import { AlertTriangle } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { PLAN_LIMITS, CREDIT_LIMIT } from '../lib/agents'
 
@@ -23,9 +24,7 @@ export default function CreditLimitModal({ open, onClose }) {
       <div className="fixed inset-0 bg-black/40 animate-fade-in" onClick={onClose} />
       <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 z-10 animate-slide-up text-center">
         <div className="w-14 h-14 bg-accent-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-7 h-7 text-accent-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
+          <AlertTriangle className="w-7 h-7 text-accent-warning" />
         </div>
         <h2 className="text-lg font-bold text-text-primary mb-2">Créditos esgotados</h2>
         <p className="text-text-secondary text-sm mb-2">

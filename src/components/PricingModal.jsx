@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Check } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { PLAN_LIMITS } from '../lib/agents'
 
@@ -98,9 +99,7 @@ export default function PricingModal({ open, onClose }) {
               <ul className="mt-4 space-y-2">
                 {plan.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
-                    <svg className="w-4 h-4 text-accent-teal flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <Check className="w-4 h-4 text-accent-teal flex-shrink-0 mt-0.5" strokeWidth={2.5} />
                     {f}
                   </li>
                 ))}
