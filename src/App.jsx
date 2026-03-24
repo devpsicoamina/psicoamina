@@ -4,6 +4,9 @@ import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import RecoveryPage from './pages/RecoveryPage'
+import TermosPage from './pages/TermosPage'
+import PrivacidadePage from './pages/PrivacidadePage'
+import SuportePage from './pages/SuportePage'
 import HomePage from './pages/HomePage'
 import Logo from './components/Logo'
 
@@ -32,6 +35,12 @@ export default function App() {
         return <SignupPage onSwitch={setAuthPage} />
       case 'recovery':
         return <RecoveryPage onSwitch={setAuthPage} />
+      case 'termos':
+        return <TermosPage onSwitch={setAuthPage} />
+      case 'privacidade':
+        return <PrivacidadePage onSwitch={setAuthPage} />
+      case 'suporte':
+        return <SuportePage onSwitch={setAuthPage} />
       default:
         return <LandingPage onSwitch={setAuthPage} />
     }
