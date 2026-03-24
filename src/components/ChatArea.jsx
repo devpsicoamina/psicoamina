@@ -237,7 +237,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
       const msgs = await getMessages(chat.id)
       setMessages(msgs)
     } catch (err) {
-      console.error('Error loading messages:', err)
+      // Fallback: lista de mensagens vazia
     } finally {
       setLoadingMessages(false)
     }
@@ -269,7 +269,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
         await saveFileToChat(chat.id, user.id, file, text)
       }
     } catch (err) {
-      console.error('PDF extraction error:', err)
+      // errorModal é exibido abaixo
       setErrorModal({ title: 'Erro ao ler PDF', message: 'Não foi possível processar este arquivo.' })
     } finally {
       setUploadingFile(false)
@@ -335,7 +335,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
         onChatsChange()
       }
     } catch (err) {
-      console.error('Chat error:', err)
+      // Modais de erro são exibidos abaixo conforme o tipo
 
       if (err.type === 'subscription_required') {
         setShowPricing(true)

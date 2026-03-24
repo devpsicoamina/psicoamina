@@ -36,8 +36,8 @@ export default function AccountModal({ open, onClose }) {
       await updateUserProfile(user.id, { fullname: name.trim() })
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-    } catch (err) {
-      console.error('Error updating profile:', err)
+    } catch {
+      // Silencioso: nome não foi salvo, UI volta ao estado anterior
     } finally {
       setSaving(false)
     }

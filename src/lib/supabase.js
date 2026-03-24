@@ -35,7 +35,7 @@ export async function signUp(email, password, fullname) {
         fullname: fullname || null,
       })
     } catch (e) {
-      console.warn('Could not create user profile on signup:', e.message)
+      // Profile will be created on first login via getOrCreateUserProfile
     }
   }
 
@@ -76,7 +76,6 @@ export async function getOrCreateUserProfile(authId, fullname) {
     )
     if (existing) return existing
   } catch (e) {
-    console.warn('getOrCreateUserProfile SELECT failed:', e.message)
     return null
   }
 
@@ -88,7 +87,6 @@ export async function getOrCreateUserProfile(authId, fullname) {
     )
     return created
   } catch (e) {
-    console.warn('getOrCreateUserProfile INSERT failed:', e.message)
     return null
   }
 }
@@ -123,7 +121,6 @@ export async function getTokenUsage(authId) {
     )
     return data || { tokens_used: 0, progress_bar_value: 0 }
   } catch (e) {
-    console.warn('getTokenUsage failed:', e.message)
     return { tokens_used: 0, progress_bar_value: 0 }
   }
 }
@@ -276,7 +273,7 @@ export async function saveFileToChat(chatId, authId, file, extractedText) {
     .upload(path, file, { upsert: true })
 
   if (uploadError) {
-    console.warn('File upload failed:', uploadError.message)
+    // Upload falhou, mas o texto extraído já foi salvo na tabela chats abaixo
   }
 
   const { error: updateError } = await supabase

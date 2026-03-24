@@ -31,8 +31,8 @@ export default function HomePage() {
         const updated = data.find(c => c.id === selectedChat.id)
         if (updated) setSelectedChat(updated)
       }
-    } catch (err) {
-      console.error('Error loading chats:', err)
+    } catch {
+      // Fallback: lista de chats vazia
     }
   }, [user, selectedChat?.id])
 
@@ -64,8 +64,8 @@ export default function HomePage() {
       await loadChats()
       setSelectedChat(chat)
       if (window.innerWidth < 768) setSidebarOpen(false)
-    } catch (err) {
-      console.error('Error creating chat:', err)
+    } catch {
+      // Silencioso: chat não foi criado, UI não muda
     }
   }
 

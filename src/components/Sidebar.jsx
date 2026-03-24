@@ -34,8 +34,7 @@ export default function Sidebar({
       onSelectChat(chat)
       setExpandedAgent(agentType)
       if (window.innerWidth < 768) onClose()
-    } catch (err) {
-      console.error('Error creating chat:', err)
+    } catch {
       alert('Erro ao criar chat. Verifique sua conexão.')
     } finally {
       setCreatingChat(null)
@@ -48,8 +47,8 @@ export default function Sidebar({
       await updateChatTitle(chatId, editTitle.trim())
       setEditingChatId(null)
       onChatsChange()
-    } catch (err) {
-      console.error('Error renaming:', err)
+    } catch {
+      setEditingChatId(null)
     }
   }
 
@@ -59,8 +58,8 @@ export default function Sidebar({
       if (selectedChatId === chatId) onSelectChat(null)
       onChatsChange()
       setDeletingChat(null)
-    } catch (err) {
-      console.error('Error deleting:', err)
+    } catch {
+      // Chat permanece na lista, usuário percebe que não foi deletado
     }
   }
 
