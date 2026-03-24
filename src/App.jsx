@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from './lib/AuthContext'
+import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import RecoveryPage from './pages/RecoveryPage'
@@ -8,7 +9,7 @@ import Logo from './components/Logo'
 
 export default function App() {
   const { user, loading } = useAuth()
-  const [authPage, setAuthPage] = useState('login')
+  const [authPage, setAuthPage] = useState('landing')
 
   if (loading) {
     return (
@@ -25,12 +26,14 @@ export default function App() {
 
   if (!user) {
     switch (authPage) {
+      case 'login':
+        return <LoginPage onSwitch={setAuthPage} />
       case 'signup':
         return <SignupPage onSwitch={setAuthPage} />
       case 'recovery':
         return <RecoveryPage onSwitch={setAuthPage} />
       default:
-        return <LoginPage onSwitch={setAuthPage} />
+        return <LandingPage onSwitch={setAuthPage} />
     }
   }
 

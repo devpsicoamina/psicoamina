@@ -89,7 +89,7 @@ export default function Sidebar({
       `}>
         {/* Header */}
         <div className="p-5 flex items-center justify-between">
-          <img src="/wordmark.png" alt="ColméIA Infantil" style={{ height: 28 }} className="object-contain" draggable={false} />
+          <img src="/wordmark.png" alt="ColméIA Infantil" style={{ height: 52 }} className="object-contain" draggable={false} />
 
           <div className="flex items-center gap-1">
             {/* Search button */}
