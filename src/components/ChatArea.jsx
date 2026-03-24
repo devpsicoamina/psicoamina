@@ -428,11 +428,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
           <AgentIcon icon={agent?.icon} size={16} style={{ color: agent?.color }} />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-primary-600">{agent?.label}</span>
-            <span className="text-secondary text-xs">—</span>
-            <span className="text-sm text-text-secondary truncate">{chat.title || 'Novo chat'}</span>
-          </div>
+          <span className="text-sm font-medium text-primary-600">{agent?.label}</span>
         </div>
 
         {/* Share / more options */}

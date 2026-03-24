@@ -92,7 +92,7 @@ export default function LandingPage({ onSwitch }) {
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-6 md:px-10 py-5">
         <div className="flex items-center gap-3">
           <img
-            src="/wordmark.png"
+            src="/horizontal.png"
             alt="ColméIA Infantil"
             style={{ height: 44 }}
             className="object-contain"
@@ -119,7 +119,7 @@ export default function LandingPage({ onSwitch }) {
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => onSwitch('signup')}
+                onClick={() => document.getElementById('planos').scrollIntoView({ behavior: 'smooth' })}
                 className="px-8 py-3.5 bg-primary-600 text-white rounded-xl font-bold text-[15px] hover:bg-primary-700 transition shadow-button"
               >
                 Começar agora
@@ -135,7 +135,7 @@ export default function LandingPage({ onSwitch }) {
           {/* Bee mascot */}
           <div className="hidden md:flex items-center justify-center flex-shrink-0">
             <img
-              src="/favicon.png"
+              src="/icone.png"
               alt="Abelha ColméIA"
               className="w-40 lg:w-52 drop-shadow-lg"
               draggable={false}
@@ -219,7 +219,7 @@ export default function LandingPage({ onSwitch }) {
       </section>
 
       {/* ─── PREÇOS ─── */}
-      <section className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-28">
+      <section id="planos" className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-28 scroll-mt-6">
         <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-3 text-center">Planos</p>
         <h2 className="text-2xl md:text-3xl font-extrabold text-primary-600 mb-10 leading-tight text-center">
           Simples e sem surpresas
@@ -315,14 +315,8 @@ export default function LandingPage({ onSwitch }) {
       </section>
 
       {/* ─── CTA FINAL ─── */}
-      <section className="bg-[#face0a] relative overflow-hidden">
-        <img
-          src="/favicon.png"
-          alt=""
-          className="absolute right-8 md:right-20 bottom-4 md:bottom-8 w-24 md:w-36 opacity-[0.12] pointer-events-none select-none"
-          draggable={false}
-        />
-        <div className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-24 text-center relative">
+      <section className="bg-[#face0a]">
+        <div className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-24 text-center">
           <h2 className="text-2xl md:text-3xl font-extrabold text-primary-600 mb-4 leading-tight">
             Pronta para transformar<br className="hidden sm:block" /> seus atendimentos?
           </h2>
@@ -330,7 +324,7 @@ export default function LandingPage({ onSwitch }) {
             Comece hoje e veja a diferença na sua rotina clínica.
           </p>
           <button
-            onClick={() => onSwitch('signup')}
+            onClick={() => document.getElementById('planos').scrollIntoView({ behavior: 'smooth' })}
             className="px-10 py-3.5 bg-primary-600 text-white rounded-xl font-bold text-[15px] hover:bg-primary-700 transition shadow-button"
           >
             Criar minha conta
