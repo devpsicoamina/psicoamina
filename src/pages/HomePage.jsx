@@ -9,6 +9,7 @@ import SearchModal from '../components/SearchModal'
 import AccountModal from '../components/AccountModal'
 import SubscriptionGate from '../components/SubscriptionGate'
 import PaymentSuccessModal from '../components/PaymentSuccessModal'
+import OnboardingTutorial from '../components/OnboardingTutorial'
 
 export default function HomePage() {
   const { user } = useAuth()
@@ -17,6 +18,9 @@ export default function HomePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(
+    !localStorage.getItem('onboarding_completed')
+  )
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(
     getPaymentStatus() === 'success'
   )
@@ -67,6 +71,10 @@ export default function HomePage() {
     } catch {
       // Silencioso: chat não foi criado, UI não muda
     }
+  }
+
+  if (showOnboarding) {
+    return <OnboardingTutorial onComplete={() => setShowOnboarding(false)} />
   }
 
   return (
