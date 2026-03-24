@@ -29,7 +29,7 @@ const FAQ_ITEMS = [
 function FaqItem({ item }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-b border-primary-100 last:border-0">
+    <div className="border-b border-[#f5e6b8] last:border-0">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-start justify-between gap-4 py-5 text-left"
@@ -55,9 +55,10 @@ export default function LandingPage({ onSwitch }) {
       {/* ─── NAV ─── */}
       <nav className="flex items-center justify-between px-6 md:px-12 lg:px-20 py-5">
         <img
-          src="/logo-dark.png"
+          src="/wordmark.png"
           alt="ColméIA Infantil"
-          className="h-10 md:h-12 object-contain"
+          style={{ height: 44 }}
+          className="object-contain"
           draggable={false}
         />
         <button
@@ -69,86 +70,83 @@ export default function LandingPage({ onSwitch }) {
       </nav>
 
       {/* ─── HERO ─── */}
-      <section className="px-6 md:px-12 lg:px-20 pt-12 pb-20 md:pt-20 md:pb-28 max-w-3xl">
-        <h1 className="text-3xl md:text-[2.75rem] font-extrabold text-primary-600 leading-[1.15] mb-5 tracking-tight">
-          Sua assistente de IA<br className="hidden md:block" /> para psicologia infantil
-        </h1>
-        <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-xl mb-10">
-          Planeje sessões, crie conteúdo e capte pacientes com inteligência artificial. Feita por quem entende sua rotina.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            onClick={() => onSwitch('signup')}
-            className="px-8 py-3.5 bg-primary-600 text-white rounded-xl font-bold text-[15px] hover:bg-primary-700 transition shadow-button"
-          >
-            Começar agora
-          </button>
-          <button
-            onClick={() => onSwitch('login')}
-            className="px-8 py-3.5 border-2 border-primary-600 text-primary-600 rounded-xl font-bold text-[15px] hover:bg-primary-50 transition"
-          >
-            Já tenho conta
-          </button>
+      <section className="bg-[#fff8e1] px-6 md:px-12 lg:px-20 pt-14 pb-20 md:pt-20 md:pb-28">
+        <div className="max-w-3xl">
+          <h1 className="text-3xl md:text-[2.75rem] font-extrabold text-primary-600 leading-[1.15] mb-5 tracking-tight">
+            Sua assistente de IA<br className="hidden md:block" /> para psicologia infantil
+          </h1>
+          <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-xl mb-10">
+            Planeje sessões, crie conteúdo e capte pacientes com inteligência artificial. Feita por quem entende sua rotina.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => onSwitch('signup')}
+              className="px-8 py-3.5 bg-primary-600 text-white rounded-xl font-bold text-[15px] hover:bg-primary-700 transition shadow-button"
+            >
+              Começar agora
+            </button>
+            <button
+              onClick={() => onSwitch('login')}
+              className="px-8 py-3.5 border-2 border-primary-600 text-primary-600 rounded-xl font-bold text-[15px] hover:bg-[#fff0c2] transition"
+            >
+              Já tenho conta
+            </button>
+          </div>
         </div>
       </section>
 
       {/* ─── AGENTES ─── */}
-      <section className="px-6 md:px-12 lg:px-20 pb-20 md:pb-28">
+      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28">
         <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-8">O que a ColméIA faz por você</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5">
-          {/* Card principal — ocupa mais espaço */}
-          <div className="md:col-span-5 bg-white rounded-2xl p-7 shadow-card border border-primary-50">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-5 max-w-4xl md:items-end">
+          {/* Card 1 — altura normal */}
+          <div className="md:w-[30%] bg-[#fffbf0] rounded-2xl p-6 shadow-card border border-[#f5e6b8]">
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+              className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
               style={{ backgroundColor: '#69080b15' }}
             >
-              <AgentIcon icon="calendar" size={24} style={{ color: '#69080b' }} />
+              <AgentIcon icon="calendar" size={22} style={{ color: '#69080b' }} />
             </div>
-            <h3 className="text-lg font-bold text-text-primary mb-2">Planejamento de sessões</h3>
+            <h3 className="text-[15px] font-bold text-text-primary mb-1.5">Planejamento de sessões</h3>
             <p className="text-sm text-text-secondary leading-relaxed">
               Receba sugestões personalizadas de atividades, técnicas e abordagens para cada paciente
             </p>
           </div>
 
-          {/* Dois cards empilhados à direita */}
-          <div className="md:col-span-7 flex flex-col gap-4 md:gap-5">
-            <div className="bg-white rounded-2xl p-6 shadow-card border border-primary-50 flex items-start gap-5">
-              <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: '#bf782e15' }}
-              >
-                <AgentIcon icon="instagram" size={20} style={{ color: '#bf782e' }} />
-              </div>
-              <div>
-                <h3 className="text-[15px] font-bold text-text-primary mb-1">Criação de conteúdos</h3>
-                <p className="text-sm text-text-secondary leading-relaxed">
-                  Gere posts, textos e materiais educativos para suas redes sociais
-                </p>
-              </div>
+          {/* Card 2 — destaque central, maior */}
+          <div className="md:w-[40%] bg-[#fff8e1] rounded-2xl p-7 shadow-card border border-[#f0d97a]">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+              style={{ backgroundColor: '#bf782e15' }}
+            >
+              <AgentIcon icon="instagram" size={24} style={{ color: '#bf782e' }} />
             </div>
+            <h3 className="text-lg font-bold text-text-primary mb-2">Criação de conteúdos</h3>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              Gere posts, textos e materiais educativos para suas redes sociais
+            </p>
+          </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-card border border-primary-50 flex items-start gap-5">
-              <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: '#d7a53c15' }}
-              >
-                <AgentIcon icon="userPlus" size={20} style={{ color: '#d7a53c' }} />
-              </div>
-              <div>
-                <h3 className="text-[15px] font-bold text-text-primary mb-1">Captação de pacientes</h3>
-                <p className="text-sm text-text-secondary leading-relaxed">
-                  Estratégias para atrair e fidelizar famílias no seu consultório
-                </p>
-              </div>
+          {/* Card 3 — altura normal */}
+          <div className="md:w-[30%] bg-[#fffbf0] rounded-2xl p-6 shadow-card border border-[#f5e6b8]">
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+              style={{ backgroundColor: '#d7a53c15' }}
+            >
+              <AgentIcon icon="userPlus" size={22} style={{ color: '#d7a53c' }} />
             </div>
+            <h3 className="text-[15px] font-bold text-text-primary mb-1.5">Captação de pacientes</h3>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              Estratégias para atrair e fidelizar famílias no seu consultório
+            </p>
           </div>
         </div>
       </section>
 
       {/* ─── COMO FUNCIONA ─── */}
-      <section className="bg-bg-alternate px-6 md:px-12 lg:px-20 py-20 md:py-28">
-        <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-10">Como funciona</p>
+      <section className="bg-[#ffefac] px-6 md:px-12 lg:px-20 py-20 md:py-28">
+        <p className="text-xs font-bold uppercase tracking-widest text-primary-600/60 mb-10">Como funciona</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-y-10 gap-x-12 max-w-3xl">
           {[
             { n: '01', title: 'Cadastre-se', desc: 'Crie sua conta em menos de um minuto' },
@@ -156,7 +154,7 @@ export default function LandingPage({ onSwitch }) {
             { n: '03', title: 'Converse', desc: 'Receba orientações práticas e personalizadas' },
           ].map(step => (
             <div key={step.n}>
-              <span className="text-3xl font-extrabold text-primary-200">{step.n}</span>
+              <span className="text-3xl font-extrabold text-primary-600/20">{step.n}</span>
               <h3 className="text-base font-bold text-text-primary mt-2 mb-1">{step.title}</h3>
               <p className="text-sm text-text-secondary leading-relaxed">{step.desc}</p>
             </div>
@@ -223,12 +221,12 @@ export default function LandingPage({ onSwitch }) {
       </section>
 
       {/* ─── FAQ ─── */}
-      <section className="bg-bg-alternate px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <section className="bg-[#fff8e1] px-6 md:px-12 lg:px-20 py-20 md:py-28">
         <div className="max-w-2xl">
           <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-3">Dúvidas frequentes</p>
           <h2 className="text-2xl font-extrabold text-primary-600 mb-10">Antes de começar</h2>
 
-          <div className="bg-white rounded-2xl px-6 md:px-8 shadow-card border border-primary-50">
+          <div className="bg-white rounded-2xl px-6 md:px-8 shadow-card border border-[#f5e6b8]">
             {FAQ_ITEMS.map((item, i) => (
               <FaqItem key={i} item={item} />
             ))}
@@ -258,11 +256,11 @@ export default function LandingPage({ onSwitch }) {
       </section>
 
       {/* ─── CTA FINAL ─── */}
-      <section className="px-6 md:px-12 lg:px-20 py-20 md:py-24 text-center">
+      <section className="bg-[#face0a] px-6 md:px-12 lg:px-20 py-20 md:py-24 text-center">
         <h2 className="text-2xl md:text-3xl font-extrabold text-primary-600 mb-4 leading-tight">
           Pronta para transformar<br className="hidden sm:block" /> seus atendimentos?
         </h2>
-        <p className="text-text-secondary mb-8 max-w-md mx-auto">
+        <p className="text-primary-600/70 mb-8 max-w-md mx-auto">
           Comece hoje e veja a diferença na sua rotina clínica.
         </p>
         <button
