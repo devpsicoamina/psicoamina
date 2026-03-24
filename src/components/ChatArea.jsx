@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import * as pdfjsLib from 'pdfjs-dist'
+import { Check, Copy, Menu, Share2, FileText, X, Loader2, Upload, ArrowRight } from 'lucide-react'
 import { getMessages, insertMessage, callChatAI, getAgentPrompt, saveFileToChat } from '../lib/supabase'
 import { getAgent } from '../lib/agents'
 import { useAuth } from '../lib/AuthContext'
@@ -109,16 +110,12 @@ function CopyButton({ text }) {
     >
       {copied ? (
         <>
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
+          <Check className="w-3.5 h-3.5" />
           Copiado
         </>
       ) : (
         <>
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
+          <Copy className="w-3.5 h-3.5" />
           Copiar
         </>
       )}
@@ -420,9 +417,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
       <header className="bg-white/90 backdrop-blur-md border-b border-primary-50 px-5 py-3 flex items-center gap-3 flex-shrink-0">
         {/* Hamburger for mobile */}
         <button onClick={onOpenSidebar} className="md:hidden text-secondary hover:text-primary-600 transition">
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          <Menu className="w-6 h-6" />
         </button>
 
         <div
@@ -441,9 +436,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
 
         {/* Share / more options */}
         <button className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white hover:bg-primary-700 transition shadow-sm flex-shrink-0">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-          </svg>
+          <Share2 className="w-4 h-4" />
         </button>
       </header>
 
@@ -488,9 +481,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
                   <>
                     {messagesWithFile[msg.id] && (
                       <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-gray-100">
-                        <svg className="w-4 h-4 text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
+                        <FileText className="w-4 h-4 text-primary-600 flex-shrink-0" />
                         <span className="text-xs text-primary-600 font-medium truncate">{messagesWithFile[msg.id]}</span>
                       </div>
                     )}
@@ -549,9 +540,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
           {/* File preview */}
           {attachedFile && (
             <div className="flex items-center gap-2 px-3 py-2 bg-primary-50 rounded-xl mb-2">
-              <svg className="w-5 h-5 text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
+              <FileText className="w-5 h-5 text-primary-600 flex-shrink-0" />
               <span className="text-sm text-primary-600 font-medium truncate flex-1">{attachedFile.name}</span>
               <span className="text-[10px] text-secondary flex-shrink-0">
                 {(attachedFile.text.length / 1000).toFixed(0)}k chars
@@ -561,9 +550,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
                 className="text-secondary hover:text-accent-error transition flex-shrink-0"
                 title="Remover arquivo"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-4 h-4" />
               </button>
             </div>
           )}
@@ -596,14 +583,9 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
                 title="Anexar PDF"
               >
                 {uploadingFile ? (
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
+                  <Upload className="w-4 h-4" />
                 )}
               </button>
             </div>
@@ -612,9 +594,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
               disabled={loading || !input.trim()}
               className="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed shadow-sm"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
             </button>
           </div>
         </div>
