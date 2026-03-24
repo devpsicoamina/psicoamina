@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { X, KeyRound, LogOut } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { updateUserProfile, signOut, resetPassword } from '../lib/supabase'
 import { PLAN_LIMITS } from '../lib/agents'
@@ -56,9 +57,7 @@ export default function AccountModal({ open, onClose }) {
           <div className="flex items-center justify-between px-6 py-4 border-b border-primary-50">
             <h2 className="text-lg font-bold text-primary-600">Minha conta</h2>
             <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-gray-100 transition">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-5 h-5" />
             </button>
           </div>
 
@@ -177,9 +176,7 @@ export default function AccountModal({ open, onClose }) {
                   className="w-full flex items-center gap-3 px-4 py-4 rounded-xl border-2 border-gray-100 hover:border-primary-200 hover:bg-bg-alternate transition text-left"
                 >
                   <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                    </svg>
+                    <KeyRound className="w-5 h-5 text-primary-600" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-text-primary">Alterar senha</p>
@@ -193,9 +190,7 @@ export default function AccountModal({ open, onClose }) {
                     className="w-full flex items-center gap-3 px-4 py-4 rounded-xl border-2 border-accent-error/20 hover:bg-accent-error/5 transition text-left"
                   >
                     <div className="w-10 h-10 rounded-xl bg-accent-error/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-accent-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
+                      <LogOut className="w-5 h-5 text-accent-error" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-accent-error">Sair da conta</p>

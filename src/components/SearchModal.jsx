@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Search, ChevronRight } from 'lucide-react'
 import { getAgent } from '../lib/agents'
 import AgentIcon from './AgentIcon'
 
@@ -38,9 +39,7 @@ export default function SearchModal({ open, onClose, chats, onSelectChat }) {
       <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg z-10 animate-slide-up overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-primary-50">
-          <svg className="w-5 h-5 text-secondary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search className="w-5 h-5 text-secondary flex-shrink-0" />
           <input
             ref={inputRef}
             value={query}
@@ -80,9 +79,7 @@ export default function SearchModal({ open, onClose, chats, onSelectChat }) {
                     </p>
                     <p className="text-xs text-secondary truncate">{agent?.label}</p>
                   </div>
-                  <svg className="w-4 h-4 text-secondary/30 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <ChevronRight className="w-4 h-4 text-secondary/30 flex-shrink-0" />
                 </button>
               )
             })
