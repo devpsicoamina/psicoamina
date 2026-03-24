@@ -4,21 +4,21 @@ export const AGENTS = [
     label: 'Planejamento de sessões',
     icon: 'calendar',
     description: 'Planeje sessões terapêuticas com inteligência artificial',
-    color: '#762E9F',
+    color: '#69080b',
   },
   {
     id: 'marketing',
     label: 'Criação de conteúdos',
     icon: 'instagram',
     description: 'Crie conteúdo de marketing para redes sociais',
-    color: '#E1306C',
+    color: '#bf782e',
   },
   {
     id: 'customerAcquisition',
     label: 'Captação de pacientes',
     icon: 'userPlus',
     description: 'Estratégias para captar novos pacientes',
-    color: '#249689',
+    color: '#d7a53c',
   },
 ]
 

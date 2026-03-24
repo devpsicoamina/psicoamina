@@ -1,6 +1,6 @@
 export const DEMO_USER = {
   id: 'demo-user-id',
-  email: 'paula@psicoamina.com.br',
+  email: 'paula@colmeiainfantil.com.br',
 }
 
 export const DEMO_PROFILE = {

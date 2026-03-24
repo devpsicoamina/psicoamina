@@ -405,7 +405,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
 
           {/* Footer */}
           <p className="text-xs text-secondary/60 mt-8">
-            © 2026 PsicoAmina. Todos os Direitos Reservados.
+            © 2026 ColméIA Infantil. Todos os Direitos Reservados.
           </p>
         </div>
       </div>
@@ -423,7 +423,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
 
         <div
           className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{ backgroundColor: (agent?.color || '#762E9F') + '15' }}
+          style={{ backgroundColor: (agent?.color || '#69080b') + '15' }}
         >
           <AgentIcon icon={agent?.icon} size={16} style={{ color: agent?.color }} />
         </div>
@@ -456,7 +456,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
           <div className="text-center py-16 animate-fade-in">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: (agent?.color || '#762E9F') + '15' }}
+              style={{ backgroundColor: (agent?.color || '#69080b') + '15' }}
             >
               <AgentIcon icon={agent?.icon} size={24} style={{ color: agent?.color }} />
             </div>
@@ -600,7 +600,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
           </div>
         </div>
         <p className="text-[10px] text-secondary/40 text-center mt-2">
-          © 2026 PsicoAmina. Todos os Direitos Reservados.
+          © 2026 ColméIA Infantil. Todos os Direitos Reservados.
         </p>
       </div>
 

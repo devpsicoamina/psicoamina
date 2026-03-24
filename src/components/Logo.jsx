@@ -1,4 +1,4 @@
-export default function Logo({ size = 'md', showText = false }) {
+export default function Logo({ size = 'md', dark = false }) {
   const sizes = {
     sm: { img: 48 },
     md: { img: 100 },
@@ -6,21 +6,15 @@ export default function Logo({ size = 'md', showText = false }) {
     sidebar: { img: 44 },
   }
   const s = sizes[size] || sizes.md
+  const src = dark ? '/logo-dark.png' : '/logo.png'
 
   return (
-    <div className="flex flex-col items-center">
-      <img
-        src="/assets/logo.png"
-        alt="PsicoAmina"
-        style={{ width: s.img, height: s.img }}
-        className="rounded-xl object-contain"
-        draggable={false}
-      />
-      {showText && (
-        <h1 className="text-2xl font-bold text-primary-600 mt-2">
-          PsicoAmina
-        </h1>
-      )}
-    </div>
+    <img
+      src={src}
+      alt="ColméIA Infantil"
+      style={{ width: s.img, height: 'auto' }}
+      className="object-contain"
+      draggable={false}
+    />
   )
 }

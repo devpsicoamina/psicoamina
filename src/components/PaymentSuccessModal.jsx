@@ -32,7 +32,7 @@ export default function PaymentSuccessModal({ open, onClose }) {
           Assinatura ativada!
         </h2>
         <p className="text-text-secondary mb-6">
-          Bem-vinda ao PsicoAmina, {userName}! Seus créditos já estão disponíveis.
+          Bem-vinda ao ColméIA, {userName}! Seus créditos já estão disponíveis.
         </p>
 
         {/* Plan details card */}

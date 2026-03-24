@@ -69,7 +69,7 @@ export default function SearchModal({ open, onClose, chats, onSelectChat }) {
                 >
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: (agent?.color || '#762E9F') + '15' }}
+                    style={{ backgroundColor: (agent?.color || '#69080b') + '15' }}
                   >
                     <AgentIcon icon={agent?.icon} size={14} style={{ color: agent?.color }} />
                   </div>

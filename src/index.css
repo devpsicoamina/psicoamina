@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    font-family: 'Poppins', system-ui, sans-serif;
+    font-family: 'Nunito', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -18,11 +18,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #DFC4F0;
+  background: #d7a53c;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #C49EE2;
+  background: #bf782e;
 }
 
 /* Markdown content styling */
@@ -46,11 +46,11 @@
 .markdown-content ol { list-style-type: decimal; }
 .markdown-content li { margin-bottom: 0.25em; line-height: 1.6; }
 .markdown-content code {
-  background: rgba(118, 46, 159, 0.08);
+  background: rgba(105, 8, 11, 0.08);
   padding: 0.125em 0.375em;
   border-radius: 4px;
   font-size: 0.875em;
-  color: #762E9F;
+  color: #69080b;
 }
 .markdown-content pre {
   background: #1e1e2e;
@@ -68,10 +68,10 @@
 .markdown-content strong { font-weight: 600; }
 .markdown-content em { font-style: italic; }
 .markdown-content blockquote {
-  border-left: 3px solid #762E9F;
+  border-left: 3px solid #69080b;
   padding-left: 1em;
   margin-left: 0;
-  color: #606A85;
+  color: #8a7560;
   font-style: italic;
 }
 
@@ -112,6 +112,6 @@ textarea {
 
 /* Focus ring for accessibility */
 .focus-ring:focus-visible {
-  outline: 2px solid #762E9F;
+  outline: 2px solid #69080b;
   outline-offset: 2px;
 }

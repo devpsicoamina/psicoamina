@@ -21,7 +21,7 @@ export default function SubscriptionGate({ children }) {
           </div>
           <h2 className="text-xl font-bold text-text-primary mb-2">Assinatura necessária</h2>
           <p className="text-text-secondary mb-6">
-            Para usar os agentes de IA da PsicoAmina, escolha um plano de assinatura. Você pode visualizar seus chats anteriores, mas precisa de uma assinatura ativa para enviar novas mensagens.
+            Para usar os agentes de IA do ColméIA, escolha um plano de assinatura. Você pode visualizar seus chats anteriores, mas precisa de uma assinatura ativa para enviar novas mensagens.
           </p>
           <button
             onClick={() => setShowPricing(true)}

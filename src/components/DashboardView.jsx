@@ -97,7 +97,7 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
                   >
                     <div
                       className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: (agent?.color || '#762E9F') + '15' }}
+                      style={{ backgroundColor: (agent?.color || '#69080b') + '15' }}
                     >
                       <AgentIcon icon={agent?.icon} size={14} style={{ color: agent?.color }} />
                     </div>
@@ -117,7 +117,7 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
 
         {/* Footer */}
         <p className="text-[10px] text-secondary/40 text-center">
-          © 2026 PsicoAmina. Todos os Direitos Reservados.
+          © 2026 ColméIA Infantil. Todos os Direitos Reservados.
         </p>
       </div>
     </div>
