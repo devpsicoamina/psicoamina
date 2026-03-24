@@ -287,35 +287,6 @@ export async function saveFileToChat(chatId, authId, file, extractedText) {
   if (updateError) throw updateError
 }
 
-// ── Subscription ──────────────────────────────────────────────
-
-export async function createCheckoutSession(planType) {
-  if (isDemoMode()) return { success: true, message: 'Demo mode' }
-
-  const session = await getSession()
-  if (!session) throw new Error('Not authenticated')
-
-  const response = await fetch(
-    `${supabaseUrl}/functions/v1/create-subscription`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
-        'apikey': supabaseAnonKey,
-      },
-      body: JSON.stringify({ plan_type: planType }),
-    }
-  )
-
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`Checkout error: ${response.status} ${text}`)
-  }
-
-  return response.json()
-}
-
 // ── Edge function: chat-ai ────────────────────────────────────
 
 export async function callChatAI({ chatId, userMessage, prompt, createTitle = false, fileContext = null }) {
