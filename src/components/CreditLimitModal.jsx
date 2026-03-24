@@ -1,6 +1,6 @@
 import { AlertTriangle } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
-import { PLAN_LIMITS, CREDIT_LIMIT } from '../lib/agents'
+import { PLAN_LIMITS, CREDIT_LIMIT } from '../lib/config'
 
 export default function CreditLimitModal({ open, onClose }) {
   const { profile } = useAuth()

@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
-import { AGENTS, PLAN_LIMITS, CREDIT_LIMIT } from '../lib/agents'
+import { AGENTS } from '../lib/agents'
+import { PLAN_LIMITS, CREDIT_LIMIT } from '../lib/config'
 import AgentIcon from './AgentIcon'
 
 export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {

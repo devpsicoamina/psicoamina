@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { isDemoMode } from './demo'
 import { DEMO_PROFILE, DEMO_TOKEN_USAGE, DEMO_CHATS, DEMO_MESSAGES, DEMO_RESPONSES } from './demoData'
+import { AI_TIMEOUT_MS, QUERY_TIMEOUT_MS } from './config'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -9,9 +10,6 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 export const supabase = (supabaseUrl && supabaseAnonKey)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
-
-const AI_TIMEOUT_MS = 90_000
-const QUERY_TIMEOUT_MS = 8000
 
 function withTimeout(promise, ms = QUERY_TIMEOUT_MS) {
   return Promise.race([

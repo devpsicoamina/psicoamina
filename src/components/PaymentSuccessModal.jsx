@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { getPaymentPlan, clearPaymentParams } from '../lib/demo'
-import { PLAN_LIMITS } from '../lib/agents'
+import { PLAN_LIMITS } from '../lib/config'
 
 export default function PaymentSuccessModal({ open, onClose }) {
   const { profile, refreshProfile } = useAuth()

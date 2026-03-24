@@ -4,13 +4,14 @@ import * as pdfjsLib from 'pdfjs-dist'
 import { Check, Copy, Menu, Share2, FileText, X, Loader2, Upload, ArrowRight } from 'lucide-react'
 import { getMessages, insertMessage, callChatAI, getAgentPrompt, saveFileToChat } from '../lib/supabase'
 import { getAgent } from '../lib/agents'
+import { PDFJS_WORKER_URL } from '../lib/config'
 import { useAuth } from '../lib/AuthContext'
 import AgentIcon from './AgentIcon'
 import Modal from './Modal'
 import CreditLimitModal from './CreditLimitModal'
 import PricingModal from './PricingModal'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL
 
 async function extractTextFromPDF(file) {
   const arrayBuffer = await file.arrayBuffer()

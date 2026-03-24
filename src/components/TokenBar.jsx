@@ -1,4 +1,4 @@
-import { CREDIT_LIMIT, PLAN_LIMITS } from '../lib/agents'
+import { PLAN_LIMITS, CREDIT_LIMIT } from '../lib/config'
 import { useAuth } from '../lib/AuthContext'
 
 export default function TokenBar({ tokensUsed = 0 }) {

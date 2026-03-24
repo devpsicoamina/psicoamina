@@ -25,12 +25,3 @@ export const AGENTS = [
 export function getAgent(agentId) {
   return AGENTS.find(a => a.id === agentId)
 }
-
-// Credit limits by plan (matches edge function TOKEN_LIMITS)
-export const PLAN_LIMITS = {
-  monthly: 80_000,
-  yearly: 100_000,
-}
-
-// Default for display when plan is unknown
-export const CREDIT_LIMIT = 80_000

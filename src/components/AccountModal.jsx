@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { X, KeyRound, LogOut } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { updateUserProfile, signOut, resetPassword } from '../lib/supabase'
-import { PLAN_LIMITS } from '../lib/agents'
+import { PLAN_LIMITS } from '../lib/config'
 import PricingModal from './PricingModal'
 
 export default function AccountModal({ open, onClose }) {

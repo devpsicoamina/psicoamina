@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
-import { PLAN_LIMITS } from '../lib/agents'
+import { PLAN_LIMITS, PRICING, CHECKOUT_URLS } from '../lib/config'
 
 export default function PricingModal({ open, onClose }) {
   const { profile } = useAuth()
   const [selectedPlan, setSelectedPlan] = useState('monthly')
-  const [loading, setLoading] = useState(false)
 
   if (!open) return null
 
@@ -14,9 +13,9 @@ export default function PricingModal({ open, onClose }) {
     {
       id: 'monthly',
       name: 'Mensal',
-      price: 'R$ 49,90',
-      period: '/mês',
-      credits: PLAN_LIMITS.monthly.toLocaleString('pt-BR'),
+      price: PRICING.monthly.label,
+      period: PRICING.monthly.period,
+      subtitle: null,
       features: [
         '3 agentes de IA especializados',
         `${PLAN_LIMITS.monthly.toLocaleString('pt-BR')} créditos/mês`,
@@ -28,32 +27,23 @@ export default function PricingModal({ open, onClose }) {
     {
       id: 'yearly',
       name: 'Anual',
-      price: 'R$ 39,90',
-      period: '/mês',
-      totalPrice: 'R$ 478,80/ano',
-      credits: PLAN_LIMITS.yearly.toLocaleString('pt-BR'),
+      price: PRICING.yearly.label,
+      period: PRICING.yearly.period,
+      subtitle: `Equivalente a ${PRICING.yearly.monthlyEquivalent} · Economia de ${PRICING.yearly.savings}`,
       features: [
         'Tudo do plano mensal',
         `${PLAN_LIMITS.yearly.toLocaleString('pt-BR')} créditos/mês`,
-        'Economia de 20%',
+        `Economia de ${PRICING.yearly.savings}`,
         'Suporte prioritário',
       ],
       badge: 'Mais popular',
     },
   ]
 
-  async function handleSubscribe() {
-    setLoading(true)
-    try {
-      // TODO: Integrate payment gateway (InfinitePay, Stripe, etc.)
-      // const { checkout_url } = await createCheckoutSession(selectedPlan)
-      // window.location.href = checkout_url
-      alert(`Integração de pagamento em desenvolvimento.\n\nPlano selecionado: ${selectedPlan}\n\nPara ativar manualmente durante testes:\nSupabase → Table Editor → users → subscription_active = true, plan_type = "${selectedPlan}"`)
-    } catch (err) {
-      console.error('Checkout error:', err)
-      alert('Erro ao iniciar pagamento. Tente novamente.')
-    } finally {
-      setLoading(false)
+  function handleSubscribe() {
+    const url = CHECKOUT_URLS[selectedPlan]
+    if (url) {
+      window.open(url, '_blank')
     }
   }
 
@@ -92,8 +82,8 @@ export default function PricingModal({ open, onClose }) {
                 <span className="text-3xl font-bold text-primary-600">{plan.price}</span>
                 <span className="text-secondary text-sm">{plan.period}</span>
               </div>
-              {plan.totalPrice && (
-                <p className="text-xs text-secondary mt-1">{plan.totalPrice}</p>
+              {plan.subtitle && (
+                <p className="text-xs text-secondary mt-1">{plan.subtitle}</p>
               )}
 
               <ul className="mt-4 space-y-2">
@@ -121,10 +111,9 @@ export default function PricingModal({ open, onClose }) {
         <div className="px-6 pb-6 space-y-3">
           <button
             onClick={handleSubscribe}
-            disabled={loading}
-            className="w-full bg-primary-600 text-white py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition shadow-button disabled:opacity-50"
+            className="w-full bg-primary-600 text-white py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition shadow-button"
           >
-            {loading ? 'Processando...' : `Assinar plano ${selectedPlan === 'monthly' ? 'mensal' : 'anual'}`}
+            {`Assinar plano ${selectedPlan === 'monthly' ? 'mensal' : 'anual'}`}
           </button>
           {onClose && (
             <button
