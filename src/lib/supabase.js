@@ -18,7 +18,7 @@ function withTimeout(promise, ms = QUERY_TIMEOUT_MS) {
   ])
 }
 
-// ── Auth helpers ──────────────────────────────────────────────
+// Auth helpers
 
 export async function signUp(email, password, fullname) {
   const { data, error } = await supabase.auth.signUp({
@@ -65,7 +65,7 @@ export async function getSession() {
   return data.session
 }
 
-// ── User profile ──────────────────────────────────────────────
+// User profile
 
 export async function getOrCreateUserProfile(authId, fullname) {
   if (isDemoMode()) return DEMO_PROFILE
@@ -104,7 +104,7 @@ export async function updateUserProfile(authId, updates) {
   return data
 }
 
-// ── Token/credit usage ───────────────────────────────────────
+// Token/credit usage
 
 export async function getTokenUsage(authId) {
   if (isDemoMode()) return DEMO_TOKEN_USAGE
@@ -125,7 +125,7 @@ export async function getTokenUsage(authId) {
   }
 }
 
-// ── Chats ─────────────────────────────────────────────────────
+// Chats
 
 export async function getChats(authId) {
   if (isDemoMode()) return [...DEMO_CHATS]
@@ -196,7 +196,7 @@ export async function deleteChat(chatId) {
   if (error) throw error
 }
 
-// ── Messages ──────────────────────────────────────────────────
+// Messages
 
 export async function getMessages(chatId) {
   if (isDemoMode()) return [...(DEMO_MESSAGES[chatId] || [])]
@@ -241,7 +241,7 @@ export async function insertMessage(chatId, authId, message, sender) {
   return data
 }
 
-// ── Agent prompts ─────────────────────────────────────────────
+// Agent prompts
 
 export async function getAgentPrompt(agentType) {
   if (isDemoMode()) return 'Você é um assistente especializado para psicólogas infantis.'
@@ -255,7 +255,7 @@ export async function getAgentPrompt(agentType) {
   return data?.prompt || ''
 }
 
-// ── File attachments ──────────────────────────────────────────
+// File attachments
 
 export async function saveFileToChat(chatId, authId, file, extractedText) {
   if (isDemoMode()) {
@@ -287,7 +287,7 @@ export async function saveFileToChat(chatId, authId, file, extractedText) {
   if (updateError) throw updateError
 }
 
-// ── Edge function: chat-ai ────────────────────────────────────
+// Edge function: chat-ai
 
 export async function callChatAI({ chatId, userMessage, prompt, createTitle = false, fileContext = null }) {
   if (isDemoMode()) {

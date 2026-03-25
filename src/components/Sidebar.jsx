@@ -34,7 +34,7 @@ export default function Sidebar({
       setExpandedAgent(agentType)
       if (window.innerWidth < 768) onClose()
     } catch {
-      alert('Erro ao criar chat. Verifique sua conexão.')
+      // Silencioso: chat não foi criado, UI não muda
     } finally {
       setCreatingChat(null)
     }

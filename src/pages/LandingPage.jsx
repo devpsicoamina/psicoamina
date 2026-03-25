@@ -88,7 +88,7 @@ export default function LandingPage({ onSwitch }) {
   return (
     <div className="min-h-screen bg-bg-main font-sans">
 
-      {/* ─── NAV ─── */}
+      {/* Nav */}
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-6 md:px-10 py-5">
         <div className="flex items-center gap-3">
           <img
@@ -107,7 +107,7 @@ export default function LandingPage({ onSwitch }) {
         </button>
       </nav>
 
-      {/* ─── HERO ─── */}
+      {/* Hero */}
       <section className="bg-[#fff8e1]">
         <div className="max-w-5xl mx-auto px-6 md:px-10 pt-14 pb-20 md:pt-20 md:pb-28 flex flex-col md:flex-row md:items-center md:gap-12">
           <div className="flex-1">
@@ -146,7 +146,7 @@ export default function LandingPage({ onSwitch }) {
 
       <BeeTrail />
 
-      {/* ─── AGENTES ─── */}
+      {/* Agentes */}
       <section className="max-w-5xl mx-auto px-6 md:px-10 pb-20 md:pb-28">
         <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-8 text-center">O que a ColméIA faz por você</p>
 
@@ -197,7 +197,7 @@ export default function LandingPage({ onSwitch }) {
 
       <BeeTrail />
 
-      {/* ─── COMO FUNCIONA ─── */}
+      {/* Como funciona */}
       <section className="bg-[#ffefac] relative overflow-hidden">
         <HexPattern />
         <div className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-28 relative">
@@ -218,7 +218,7 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* ─── PREÇOS ─── */}
+      {/* Preços */}
       <section id="planos" className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-28 scroll-mt-6">
         <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-3 text-center">Planos</p>
         <h2 className="text-2xl md:text-3xl font-extrabold text-primary-600 mb-10 leading-tight text-center">
@@ -276,7 +276,7 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* ─── FAQ ─── */}
+      {/* FAQ */}
       <section className="bg-[#fff8e1] relative overflow-hidden">
         <HexPattern />
         <div className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-28 relative">
@@ -314,7 +314,7 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* ─── CTA FINAL ─── */}
+      {/* CTA final */}
       <section className="bg-[#face0a]">
         <div className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-24 text-center">
           <h2 className="text-2xl md:text-3xl font-extrabold text-primary-600 mb-4 leading-tight">
@@ -332,7 +332,7 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* ─── FOOTER ─── */}
+      {/* Footer */}
       <footer className="border-t border-primary-100">
         <div className="max-w-5xl mx-auto px-6 md:px-10 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">

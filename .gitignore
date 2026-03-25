@@ -3,4 +3,5 @@ dist
 .env
 *.local
 CLAUDE.md
+GUIA_IMPLEMENTACAO.md
 audit.sh

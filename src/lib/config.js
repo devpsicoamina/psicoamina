@@ -1,4 +1,4 @@
-// ── Créditos por plano (deve bater com TOKEN_LIMITS na edge function chat-ai) ──
+// Créditos por plano (deve bater com TOKEN_LIMITS na edge function chat-ai)
 export const PLAN_LIMITS = {
   monthly: 80_000,
   yearly: 100_000,
@@ -7,7 +7,7 @@ export const PLAN_LIMITS = {
 // Fallback para quando o plano é desconhecido
 export const CREDIT_LIMIT = 80_000
 
-// ── Preços ──
+// Preços
 export const PRICING = {
   monthly: {
     price: 19.90,
@@ -23,15 +23,15 @@ export const PRICING = {
   },
 }
 
-// ── Checkout (Hotmart) ──
+// Checkout (Hotmart)
 export const CHECKOUT_URLS = {
   monthly: 'https://pay.hotmart.com/N104935072X?off=rc99wnbh&checkoutMode=10',
   yearly: 'https://pay.hotmart.com/N104935072X?off=87uk731h&checkoutMode=10',
 }
 
-// ── Timeouts ──
+// Timeouts
 export const AI_TIMEOUT_MS = 90_000
 export const QUERY_TIMEOUT_MS = 8_000
 
-// ── PDF.js worker ──
+// PDF.js worker
 export const PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'

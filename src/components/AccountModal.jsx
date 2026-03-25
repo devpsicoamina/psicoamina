@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, KeyRound, LogOut } from 'lucide-react'
+import { X, KeyRound, LogOut, MessageCircle } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { updateUserProfile, signOut, resetPassword } from '../lib/supabase'
 import { PLAN_LIMITS } from '../lib/config'
@@ -12,6 +12,7 @@ export default function AccountModal({ open, onClose }) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [showPricing, setShowPricing] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
 
   if (!open) return null
 
@@ -170,7 +171,8 @@ export default function AccountModal({ open, onClose }) {
                   onClick={() => {
                     if (user?.email) {
                       resetPassword(user.email)
-                      alert('Email de redefinição de senha enviado!')
+                      setResetSent(true)
+                      setTimeout(() => setResetSent(false), 3000)
                     }
                   }}
                   className="w-full flex items-center gap-3 px-4 py-4 rounded-xl border-2 border-gray-100 hover:border-primary-200 hover:bg-bg-alternate transition text-left"
@@ -179,10 +181,27 @@ export default function AccountModal({ open, onClose }) {
                     <KeyRound className="w-5 h-5 text-primary-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-text-primary">Alterar senha</p>
+                    <p className="text-sm font-medium text-text-primary">
+                      {resetSent ? '✓ Email enviado!' : 'Alterar senha'}
+                    </p>
                     <p className="text-xs text-secondary">Enviar link de redefinição por email</p>
                   </div>
                 </button>
+
+                <a
+                  href="https://wa.me/5500000000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center gap-3 px-4 py-4 rounded-xl border-2 border-gray-100 hover:border-primary-200 hover:bg-bg-alternate transition text-left"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">Suporte</p>
+                    <p className="text-xs text-secondary">Fale com a gente pelo WhatsApp</p>
+                  </div>
+                </a>
 
                 <div className="pt-4 border-t border-gray-100">
                   <button

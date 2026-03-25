@@ -126,6 +126,7 @@ export default function HomePage() {
           open={showPaymentSuccess}
           onClose={() => setShowPaymentSuccess(false)}
         />
+
       </div>
     </SubscriptionGate>
   )

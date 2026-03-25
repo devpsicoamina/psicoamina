@@ -31,7 +31,7 @@ function StepIndicator({ current, total }) {
   )
 }
 
-// ─── STEP 1: Welcome ───
+// Step 1: Welcome
 function Step1() {
   return (
     <div className="flex flex-col items-center text-center px-2">
@@ -49,7 +49,7 @@ function Step1() {
   )
 }
 
-// ─── STEP 2: Agents ───
+// Step 2: Agents
 function Step2() {
   const agents = [
     {
@@ -107,7 +107,7 @@ function Step2() {
   )
 }
 
-// ─── STEP 3: Chat demo ───
+// Step 3: Chat demo
 function Step3() {
   return (
     <div className="px-2">
@@ -160,7 +160,7 @@ function Step3() {
   )
 }
 
-// ─── STEP 4: Tips + CTA ───
+// Step 4: Tips + CTA
 function Step4({ onComplete }) {
   const tips = [
     {
