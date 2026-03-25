@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import * as pdfjsLib from 'pdfjs-dist'
-import { Check, Copy, Menu, Share2, FileText, X, Loader2, Upload, ArrowRight } from 'lucide-react'
+import { Check, Copy, Menu, FileText, X, Loader2, Upload, ArrowRight } from 'lucide-react'
 import { getMessages, insertMessage, callChatAI, getAgentPrompt, saveFileToChat } from '../lib/supabase'
 import { getAgent, AGENTS } from '../lib/agents'
 import { PDFJS_WORKER_URL } from '../lib/config'
@@ -431,10 +431,6 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
           <span className="text-sm font-medium text-primary-600">{agent?.label}</span>
         </div>
 
-        {/* Share / more options */}
-        <button className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white hover:bg-primary-700 transition shadow-sm flex-shrink-0">
-          <Share2 className="w-4 h-4" />
-        </button>
       </header>
 
       {/* Messages */}

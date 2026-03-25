@@ -47,6 +47,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   function loadProfile(userId) {
+    setLoading(true)
     Promise.allSettled([
       getOrCreateUserProfile(userId),
       getTokenUsage(userId),
