@@ -1,9 +1,21 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// This edge function handles payment webhook callbacks from your payment gateway.
-// Configure the webhook URL in your payment provider dashboard:
-// POST ${SUPABASE_URL}/functions/v1/payment-webhook
+// Hotmart webhook handler for ColméIA Infantil
+// Configure in Hotmart: Produto → Configurações → Webhooks
+// URL: https://nwgnhuesqdnedupykthj.supabase.co/functions/v1/payment-webhook
+
+const OFFER_PLANS: Record<string, string> = {
+  rc99wnbh: "monthly",
+  "87uk731h": "yearly",
+};
+
+const ACTIVATE_EVENTS = ["PURCHASE_APPROVED"];
+const DEACTIVATE_EVENTS = [
+  "PURCHASE_CANCELED",
+  "PURCHASE_REFUNDED",
+  "SUBSCRIPTION_CANCELLATION",
+];
 
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
@@ -11,40 +23,61 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const body = await req.json();
-    console.info("payment-webhook: received", JSON.stringify(body).substring(0, 200));
+    // Validate Hotmart hottok
+    const hottok = req.headers.get("x-hotmart-hottok") ?? "";
+    const expectedHottok = Deno.env.get("HOTMART_HOTTOK") ?? "";
+    if (expectedHottok && hottok !== expectedHottok) {
+      console.error("payment-webhook: invalid hottok");
+      return new Response("Unauthorized", { status: 401 });
+    }
 
-    // ─────────────────────────────────────────────────────────
-    // TODO: Validate webhook signature from your payment provider
-    //
-    // For InfinitePay:
-    // const signature = req.headers.get("x-infinitepay-signature");
-    // if (!verifySignature(signature, body)) { return new Response("Invalid signature", { status: 401 }); }
-    //
-    // For Stripe:
-    // const signature = req.headers.get("stripe-signature");
-    // const event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
-    // ─────────────────────────────────────────────────────────
+    const body = await req.json();
+    const event = body.event as string;
+    const buyerEmail = body.data?.buyer?.email?.toLowerCase()?.trim();
+    const offerCode = body.data?.purchase?.offer?.code;
+    const transactionId = body.data?.purchase?.transaction ?? "unknown";
+
+    console.info(`payment-webhook: event=${event} email=${buyerEmail} offer=${offerCode} tx=${transactionId}`);
+
+    if (!buyerEmail) {
+      console.error("payment-webhook: no buyer email in payload");
+      return new Response(JSON.stringify({ received: true, warning: "no email" }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // TODO: Extract these from your payment provider's webhook payload
-    const user_auth_id = body.metadata?.user_auth_id;
-    const plan_type = body.metadata?.plan_type || "monthly";
-    const payment_status = body.status; // e.g., "approved", "paid", "succeeded"
-
-    if (!user_auth_id) {
-      console.error("payment-webhook: missing user_auth_id in metadata");
-      return new Response("Missing user_auth_id", { status: 400 });
+    // Find user by email via auth.users
+    const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+    if (authError) {
+      console.error("payment-webhook: error listing users:", authError.message);
+      return new Response("Internal error", { status: 500 });
     }
 
-    // Only activate on successful payment
-    if (payment_status === "approved" || payment_status === "paid" || payment_status === "succeeded") {
+    const authUser = authUsers.users.find(
+      (u: any) => u.email?.toLowerCase() === buyerEmail
+    );
+
+    if (!authUser) {
+      console.info(`payment-webhook: email ${buyerEmail} not found in auth.users — user hasn't signed up yet`);
+      return new Response(
+        JSON.stringify({ received: true, pending: "user not registered yet" }),
+        { headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const userAuthId = authUser.id;
+
+    // Activate subscription
+    if (ACTIVATE_EVENTS.includes(event)) {
+      const planType = OFFER_PLANS[offerCode] ?? "monthly";
+
       const periodEnd = new Date();
-      if (plan_type === "yearly") {
+      if (planType === "yearly") {
         periodEnd.setFullYear(periodEnd.getFullYear() + 1);
       } else {
         periodEnd.setMonth(periodEnd.getMonth() + 1);
@@ -54,27 +87,32 @@ Deno.serve(async (req: Request) => {
         .from("users")
         .update({
           subscription_active: true,
-          plan_type,
+          plan_type: planType,
           current_period_end: periodEnd.toISOString(),
         })
-        .eq("user_auth_id", user_auth_id);
+        .eq("user_auth_id", userAuthId);
 
       if (error) {
-        console.error("payment-webhook: update error", error.message);
+        console.error("payment-webhook: activate error:", error.message);
         return new Response("DB update failed", { status: 500 });
       }
 
-      console.info(`payment-webhook: activated ${plan_type} for ${user_auth_id}`);
+      console.info(`payment-webhook: activated ${planType} for ${buyerEmail} (${userAuthId})`);
     }
 
-    // Handle cancellation/failure
-    if (payment_status === "cancelled" || payment_status === "failed" || payment_status === "refunded") {
-      await supabase
+    // Deactivate subscription
+    if (DEACTIVATE_EVENTS.includes(event)) {
+      const { error } = await supabase
         .from("users")
         .update({ subscription_active: false })
-        .eq("user_auth_id", user_auth_id);
+        .eq("user_auth_id", userAuthId);
 
-      console.info(`payment-webhook: deactivated subscription for ${user_auth_id}`);
+      if (error) {
+        console.error("payment-webhook: deactivate error:", error.message);
+        return new Response("DB update failed", { status: 500 });
+      }
+
+      console.info(`payment-webhook: deactivated subscription for ${buyerEmail} (${userAuthId})`);
     }
 
     return new Response(JSON.stringify({ received: true }), {

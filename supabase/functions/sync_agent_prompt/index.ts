@@ -15,96 +15,31 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-async function getGoogleAccessToken(sa: any) {
-  const jwt = await crypto.subtle.importKey(
-    "pkcs8",
-    new TextEncoder().encode(sa.private_key),
-    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const header = btoa(JSON.stringify({ alg: "RS256", typ: "JWT" }));
-  const now = Math.floor(Date.now() / 1000);
-
-  const claim = btoa(
-    JSON.stringify({
-      iss: sa.client_email,
-      scope: "https://www.googleapis.com/auth/documents.readonly",
-      aud: "https://oauth2.googleapis.com/token",
-      exp: now + 3600,
-      iat: now,
-    })
-  );
-
-  const data = `${header}.${claim}`;
-  const signature = await crypto.subtle.sign(
-    "RSASSA-PKCS1-v1_5",
-    jwt,
-    new TextEncoder().encode(data)
-  );
-
-  const signedJwt = `${data}.${btoa(
-    String.fromCharCode(...new Uint8Array(signature))
-  )}`;
-
-  const res = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: signedJwt,
-    }),
-  });
-
-  const json = await res.json();
-  return json.access_token;
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-    }
-
-    const jwt = authHeader.replace("Bearer ", "");
-
+    // TODO: Add SYNC_SECRET validation before production
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
-
-    const { data } = await supabase.auth.getUser(jwt);
-    if (!data?.user) throw new Error("Invalid JWT");
 
     const { agentType } = await req.json();
     if (!(agentType in DOCS_MAP)) {
       return new Response("Invalid agentType", { status: 400, headers: corsHeaders });
     }
 
-    const sa = JSON.parse(Deno.env.get("GOOGLE_SERVICE_ACCOUNT_JSON")!);
-    const token = await getGoogleAccessToken(sa);
-
     const docRes = await fetch(
-      `https://docs.googleapis.com/v1/documents/${DOCS_MAP[agentType]}`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      `https://docs.google.com/document/d/${DOCS_MAP[agentType as AgentType]}/export?format=txt`
     );
+    if (!docRes.ok) {
+      throw new Error(`Failed to fetch doc: ${docRes.status}`);
+    }
 
-    const doc = await docRes.json();
-
-    const text =
-      doc.body?.content
-        ?.map((c: any) =>
-          c.paragraph?.elements
-            ?.map((e: any) => e.textRun?.content || "")
-            .join("")
-        )
-        .join("") ?? "";
+    const text = await docRes.text();
 
     await supabase
       .from("agents_prompts")
