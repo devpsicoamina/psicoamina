@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { supabase, getOrCreateUserProfile, getTokenUsage } from './supabase'
 import { isDemoMode } from './demo'
 import { DEMO_USER, DEMO_PROFILE, DEMO_TOKEN_USAGE } from './demoData'
@@ -10,9 +10,9 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null)
   const [tokenUsage, setTokenUsage] = useState({ tokens_used: 0, progress_bar_value: 0 })
   const [loading, setLoading] = useState(true)
+  const profileLoaded = useRef(false)
 
   useEffect(() => {
-    // Demo mode: skip all Supabase calls
     if (isDemoMode()) {
       setSession({ user: DEMO_USER })
       setProfile(DEMO_PROFILE)
@@ -32,10 +32,13 @@ export function AuthProvider({ children }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, sess) => {
+        if (event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') return
+        if (event === 'SIGNED_IN' && profileLoaded.current) return
         setSession(sess)
         if (sess?.user) {
           loadProfile(sess.user.id)
         } else {
+          profileLoaded.current = false
           setProfile(null)
           setTokenUsage({ tokens_used: 0, progress_bar_value: 0 })
           setLoading(false)
@@ -47,7 +50,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   function loadProfile(userId) {
-    setLoading(true)
+    if (!profileLoaded.current) setLoading(true)
     Promise.allSettled([
       getOrCreateUserProfile(userId),
       getTokenUsage(userId),
@@ -58,6 +61,7 @@ export function AuthProvider({ children }) {
       if (usageResult.status === 'fulfilled' && usageResult.value) {
         setTokenUsage(usageResult.value)
       }
+      profileLoaded.current = true
       setLoading(false)
     })
   }
