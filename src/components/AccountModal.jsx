@@ -20,7 +20,6 @@ export default function AccountModal({ open, onClose }) {
   const planLabel = planType === 'yearly' ? 'anual' : 'mensal'
   const credits = PLAN_LIMITS[planType] || PLAN_LIMITS.monthly
 
-  // Format renewal date
   let renewalStr = ''
   if (profile?.current_period_end) {
     renewalStr = new Date(profile.current_period_end).toLocaleDateString('pt-BR', {
@@ -54,16 +53,14 @@ export default function AccountModal({ open, onClose }) {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="fixed inset-0 bg-black/40" onClick={onClose} />
         <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md z-10 animate-slide-up overflow-hidden max-h-[90vh] overflow-y-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-primary-50">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-primary-50">
             <h2 className="text-lg font-bold text-primary-600">Minha conta</h2>
             <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-gray-100 transition">
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Tabs */}
-          <div className="flex px-6 pt-3 gap-1">
+                    <div className="flex px-6 pt-3 gap-1">
             <button
               onClick={() => setTab('info')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
@@ -82,12 +79,10 @@ export default function AccountModal({ open, onClose }) {
             </button>
           </div>
 
-          {/* Content */}
-          <div className="p-6">
+                    <div className="p-6">
             {tab === 'info' ? (
               <div className="space-y-4 animate-fade-in">
-                {/* Avatar */}
-                <div className="flex items-center gap-4 mb-4">
+                                <div className="flex items-center gap-4 mb-4">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-button">
                     <span className="text-white text-xl font-bold">
                       {(profile?.fullname || 'U').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
@@ -99,8 +94,7 @@ export default function AccountModal({ open, onClose }) {
                   </div>
                 </div>
 
-                {/* Subscription status */}
-                <div className={`rounded-xl p-4 border-2 ${
+                                <div className={`rounded-xl p-4 border-2 ${
                   isSubscribed
                     ? 'border-accent-teal/30 bg-accent-teal/5'
                     : 'border-accent-error/20 bg-accent-error/5'
@@ -133,8 +127,7 @@ export default function AccountModal({ open, onClose }) {
                   )}
                 </div>
 
-                {/* Name field */}
-                <div>
+                                <div>
                   <label className="block text-sm font-medium text-primary-600 mb-1.5">Nome completo</label>
                   <input
                     value={name}
@@ -143,8 +136,7 @@ export default function AccountModal({ open, onClose }) {
                   />
                 </div>
 
-                {/* Email field */}
-                <div>
+                                <div>
                   <label className="block text-sm font-medium text-primary-600 mb-1.5">Email</label>
                   <input
                     value={user?.email || ''}
@@ -223,8 +215,7 @@ export default function AccountModal({ open, onClose }) {
         </div>
       </div>
 
-      {/* Pricing modal opened from subscription section */}
-      <PricingModal
+            <PricingModal
         open={showPricing}
         onClose={() => setShowPricing(false)}
       />

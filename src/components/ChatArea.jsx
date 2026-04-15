@@ -375,8 +375,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
             Escolha um de nossos agentes para começar uma conversa
           </p>
 
-          {/* Agent cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {AGENTS.map(a => (
               <button
                 key={a.id}
@@ -395,16 +394,14 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
             ))}
           </div>
 
-          {/* Mobile: button to open sidebar */}
-          <button
+                    <button
             onClick={onOpenSidebar}
             className="md:hidden bg-primary-600 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition shadow-button"
           >
             Escolher agente
           </button>
 
-          {/* Footer */}
-          <p className="text-xs text-secondary/60 mt-8">
+                    <p className="text-xs text-secondary/60 mt-8">
             © 2026 ColméIA Infantil. Todos os Direitos Reservados.
           </p>
         </div>
@@ -414,10 +411,8 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
 
   return (
     <div className="flex-1 flex flex-col bg-bg-chat min-w-0">
-      {/* Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-primary-50 px-5 py-3 flex items-center gap-3 flex-shrink-0">
-        {/* Hamburger for mobile */}
-        <button onClick={onOpenSidebar} className="md:hidden text-secondary hover:text-primary-600 transition">
+            <header className="bg-white/90 backdrop-blur-md border-b border-primary-50 px-5 py-3 flex items-center gap-3 flex-shrink-0">
+                <button onClick={onOpenSidebar} className="md:hidden text-secondary hover:text-primary-600 transition">
           <Menu className="w-6 h-6" />
         </button>
 
@@ -433,8 +428,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
 
       </header>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 md:px-8 lg:px-16 xl:px-[15%] py-6 space-y-6">
+            <div className="flex-1 overflow-y-auto px-4 md:px-8 lg:px-16 xl:px-[15%] py-6 space-y-6">
         {loadingMessages && messages.length === 0 && (
           <div className="flex justify-center py-12">
             <div className="flex flex-col items-center gap-3">
@@ -505,8 +499,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
           </div>
         ))}
 
-        {/* Thinking indicator */}
-        {loading && (
+                {loading && (
           <div className="flex justify-start message-appear">
             <div className="bg-white border border-primary-100 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
               <div className="flex items-center gap-3">
@@ -527,11 +520,9 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input area */}
-      <div className="px-4 md:px-8 lg:px-16 xl:px-[15%] pb-4 pt-2 flex-shrink-0">
+            <div className="px-4 md:px-8 lg:px-16 xl:px-[15%] pb-4 pt-2 flex-shrink-0">
         <div className="bg-white rounded-3xl shadow-card px-5 py-3 max-w-3xl mx-auto">
-          {/* File preview */}
-          {attachedFile && (
+                    {attachedFile && (
             <div className="flex items-center gap-2 px-3 py-2 bg-primary-50 rounded-xl mb-2">
               <FileText className="w-5 h-5 text-primary-600 flex-shrink-0" />
               <span className="text-sm text-primary-600 font-medium truncate flex-1">{attachedFile.name}</span>
@@ -560,16 +551,14 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
           />
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-2">
-              {/* Hidden file input */}
-              <input
+                            <input
                 ref={fileInputRef}
                 type="file"
                 accept=".pdf"
                 onChange={handleFileSelect}
                 className="hidden"
               />
-              {/* Upload button */}
-              <button
+                            <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingFile || loading}
                 className="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 transition disabled:opacity-50"
@@ -596,8 +585,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
         </p>
       </div>
 
-      {/* Error modals */}
-      <Modal
+            <Modal
         open={!!errorModal}
         onClose={() => setErrorModal(null)}
         title={errorModal?.title}
@@ -611,14 +599,12 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
         </button>
       </Modal>
 
-      {/* Credit limit modal */}
-      <CreditLimitModal
+            <CreditLimitModal
         open={showCreditLimit}
         onClose={() => setShowCreditLimit(false)}
       />
 
-      {/* Pricing modal (triggered by subscription_required) */}
-      <PricingModal
+            <PricingModal
         open={showPricing}
         onClose={() => setShowPricing(false)}
       />

@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [tokenUsage, setTokenUsage] = useState({ tokens_used: 0, progress_bar_value: 0 })
   const [loading, setLoading] = useState(true)
   const profileLoaded = useRef(false)
+  const loadingProfile = useRef(false)
 
   useEffect(() => {
     if (isDemoMode()) {
@@ -50,6 +51,8 @@ export function AuthProvider({ children }) {
   }, [])
 
   function loadProfile(userId) {
+    if (loadingProfile.current) return
+    loadingProfile.current = true
     if (!profileLoaded.current) setLoading(true)
     Promise.allSettled([
       getOrCreateUserProfile(userId),
@@ -62,6 +65,7 @@ export function AuthProvider({ children }) {
         setTokenUsage(usageResult.value)
       }
       profileLoaded.current = true
+      loadingProfile.current = false
       setLoading(false)
     })
   }

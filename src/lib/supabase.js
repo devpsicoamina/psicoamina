@@ -83,11 +83,19 @@ export async function getOrCreateUserProfile(authId, fullname) {
     const insertData = { user_auth_id: authId }
     if (fullname) insertData.fullname = fullname
     const { data: created } = await withTimeout(
-      supabase.from('users').insert(insertData).select().single()
+      supabase.from('users').upsert(insertData, { onConflict: 'user_auth_id', ignoreDuplicates: true }).select().single()
     )
     return created
   } catch (e) {
-    return null
+    // If upsert races, try fetching again
+    try {
+      const { data } = await withTimeout(
+        supabase.from('users').select('*').eq('user_auth_id', authId).maybeSingle()
+      )
+      return data
+    } catch {
+      return null
+    }
   }
 }
 

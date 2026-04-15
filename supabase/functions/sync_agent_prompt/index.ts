@@ -21,7 +21,6 @@ serve(async (req) => {
   }
 
   try {
-    // TODO: Add SYNC_SECRET validation before production
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -51,7 +50,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
-    console.error("SYNC ERROR:", err);
+    console.error("sync_agent_prompt:", err);
     return new Response("Internal error", { status: 500, headers: corsHeaders });
   }
 });

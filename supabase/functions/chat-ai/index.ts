@@ -1,8 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-console.info("chat-ai: boot");
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -20,13 +18,9 @@ Deno.serve(async (req: Request) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  console.info("chat-ai: request received");
-
   try {
-    // 1. JWT obrigatorio
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      console.info("chat-ai: missing authorization header");
       return new Response("Missing Authorization header", {
         status: 401,
         headers: corsHeaders,
@@ -34,9 +28,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const jwt = authHeader.replace("Bearer ", "");
-    console.info("chat-ai: jwt received, length:", jwt.length);
 
-    // 2. Supabase client
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -47,14 +39,12 @@ Deno.serve(async (req: Request) => {
       }
     );
 
-    // 3. Valida usuario
     const {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      console.info("chat-ai: unauthorized -", userError?.message);
       return new Response("Unauthorized", {
         status: 401,
         headers: corsHeaders,
@@ -62,9 +52,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const user_auth_id = user.id;
-    console.info("chat-ai: user validated -", user_auth_id);
 
-    // 4. Verifica assinatura ativa
     const { data: userData, error: userDataError } = await supabase
       .from("users")
       .select("subscription_active, plan_type")
@@ -72,7 +60,6 @@ Deno.serve(async (req: Request) => {
       .single();
 
     if (userDataError || !userData) {
-      console.info("chat-ai: user not found in users table -", userDataError?.message);
       return new Response(
         JSON.stringify({ error: "user_not_found" }),
         { status: 403, headers: corsHeaders }
@@ -80,16 +67,12 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!userData.subscription_active) {
-      console.info("chat-ai: subscription not active");
       return new Response(
         JSON.stringify({ error: "subscription_required" }),
         { status: 403, headers: corsHeaders }
       );
     }
 
-    console.info("chat-ai: subscription active, plan:", userData.plan_type);
-
-    // 5. Verifica limite de tokens
     const plan = userData.plan_type ?? "monthly";
     const tokenLimit = TOKEN_LIMITS[plan] ?? TOKEN_LIMITS.monthly;
 
@@ -104,31 +87,24 @@ Deno.serve(async (req: Request) => {
     }
 
     const currentTokens = usageData?.tokens_used ?? 0;
-    console.info("chat-ai: tokens used:", currentTokens, "/", tokenLimit);
 
     if (currentTokens >= tokenLimit) {
-      console.info("chat-ai: token limit reached");
       return new Response(
         JSON.stringify({ error: "token_limit_reached" }),
         { status: 403, headers: corsHeaders }
       );
     }
 
-    // 6. Body
     const { chat_id, user_message, prompt, agent_id, createTitle, file_context } =
       await req.json();
 
-    console.info("chat-ai: body received, chat_id:", chat_id, "has file_context:", !!file_context);
-
     if (!chat_id || !user_message) {
-      console.info("chat-ai: invalid payload");
       return new Response("Invalid payload", {
         status: 400,
         headers: corsHeaders,
       });
     }
 
-    // 7. Busca prompt do agente ou usa fallback
     let systemPrompt = prompt ?? "Voce e um assistente util.";
 
     if (agent_id) {
@@ -140,11 +116,9 @@ Deno.serve(async (req: Request) => {
 
       if (agentData?.prompt) {
         systemPrompt = agentData.prompt;
-        console.info("chat-ai: prompt loaded for agent:", agent_id);
       }
     }
 
-    // 8. Build system messages (prompt + optional file context)
     const systemMessages: Array<{ role: string; content: string }> = [];
 
     if (systemPrompt) {
@@ -156,14 +130,28 @@ Deno.serve(async (req: Request) => {
         role: "system",
         content: `O usuário anexou o seguinte documento para análise:\n\n${file_context}\n\nUse essas informações como contexto para responder às perguntas.`,
       });
-      console.info("chat-ai: file_context injected, length:", file_context.length);
     }
 
-    // 9. Busca historico de mensagens
+    // Validate chat belongs to user before accessing messages
+    const { data: chatData, error: chatError } = await supabase
+      .from("chats")
+      .select("id")
+      .eq("id", chat_id)
+      .eq("user_auth_id", user_auth_id)
+      .single();
+
+    if (chatError || !chatData) {
+      return new Response(
+        JSON.stringify({ error: "chat_not_found" }),
+        { status: 403, headers: corsHeaders }
+      );
+    }
+
     const { data: history, error: historyError } = await supabase
       .from("chat_messages")
       .select("sender, message")
       .eq("chat_id", chat_id)
+      .eq("user_auth_id", user_auth_id)
       .order("created_at", { ascending: false })
       .limit(30);
 
@@ -178,8 +166,6 @@ Deno.serve(async (req: Request) => {
         content: msg.message,
       }));
 
-    // 10. Chamada OpenAI
-    console.info("chat-ai: calling openai");
     const openaiRes = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -206,14 +192,10 @@ Deno.serve(async (req: Request) => {
 
     const openaiData = await openaiRes.json();
     const agentMessage = openaiData.choices[0].message.content;
-    console.info("chat-ai: openai response received");
 
-    // 11. Atualiza tokens_used
     const tokensUsed = openaiData.usage?.total_tokens ?? 0;
     const newTotal = currentTokens + tokensUsed;
     const newProgress = Math.min(newTotal / tokenLimit, 1);
-
-    console.info("chat-ai: updating tokens:", newTotal, "/", tokenLimit);
 
     if (usageData?.id) {
       await supabase
@@ -231,9 +213,6 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    console.info("chat-ai: tokens updated");
-
-    // 12. Salva mensagem do agente
     await supabase.from("chat_messages").insert({
       chat_id,
       user_auth_id,
@@ -241,7 +220,6 @@ Deno.serve(async (req: Request) => {
       message: agentMessage,
     });
 
-    // 13. Geracao de titulo (opcional)
     if (createTitle === true) {
       const titleRes = await fetch(
         "https://api.openai.com/v1/chat/completions",
@@ -271,12 +249,11 @@ Deno.serve(async (req: Request) => {
         await supabase
           .from("chats")
           .update({ title })
-          .eq("id", chat_id);
-        console.info("chat-ai: title generated:", title);
+          .eq("id", chat_id)
+          .eq("user_auth_id", user_auth_id);
       }
     }
 
-    // 14. Retorno
     return new Response(
       JSON.stringify({
         reply: agentMessage,
@@ -292,7 +269,7 @@ Deno.serve(async (req: Request) => {
       }
     );
   } catch (err: any) {
-    console.error("chat-ai: error -", err.message);
+    console.error("chat-ai:", err.message);
     return new Response(
       JSON.stringify({ error: err.message }),
       {

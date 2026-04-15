@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { ChevronDown, Check, X, Menu, X as XIcon, Calendar, UserPlus, MessageCircle, FileText, Clock, Sparkles } from 'lucide-react'
+import { useState, useEffect, Fragment } from 'react'
+import { ChevronDown, Check, X, Menu, X as XIcon, MessageCircle, Sparkles } from 'lucide-react'
 import { PRICING, CHECKOUT_URLS } from '../lib/config'
 import AgentIcon from '../components/AgentIcon'
 
@@ -71,6 +71,17 @@ function FaqItem({ item, isOpen, onToggle }) {
   )
 }
 
+function HexStep({ n }) {
+  return (
+    <div className="inline-flex items-center justify-center mb-5">
+      <svg width="40" height="44" viewBox="0 0 40 44" className="drop-shadow-sm">
+        <path d="M20 0L40 11L40 33L20 44L0 33L0 11Z" fill="#69080b" />
+        <text x="20" y="27" textAnchor="middle" fill="white" fontSize="15" fontWeight="700" fontFamily="Nunito, sans-serif">{n}</text>
+      </svg>
+    </div>
+  )
+}
+
 function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 }
@@ -89,7 +100,6 @@ export default function LandingPage({ onSwitch }) {
   return (
     <div className="min-h-screen bg-[#fffdf0] font-sans overflow-x-hidden">
 
-      {/* 1. Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 bg-[#fffdf0] transition-shadow ${scrolled ? 'shadow-md' : ''}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
           <img
@@ -152,10 +162,8 @@ export default function LandingPage({ onSwitch }) {
         )}
       </header>
 
-      {/* Spacer for fixed header */}
       <div className="h-[72px]" />
 
-      {/* 2. Hero */}
       <section className="bg-[#fef3c7]">
         <div className="max-w-7xl mx-auto px-5 md:px-10 pt-12 pb-16 md:pt-20 md:pb-28 flex flex-col md:flex-row md:items-center md:gap-16">
           <div className="flex-1 md:max-w-[55%]">
@@ -182,7 +190,6 @@ export default function LandingPage({ onSwitch }) {
             </div>
           </div>
 
-          {/* App mockup */}
           <div className="mt-10 md:mt-0 flex-shrink-0 md:max-w-[40%] w-full">
             <div className="bg-white rounded-2xl shadow-xl border border-[#f5e6b8] p-5 space-y-3">
               <p className="text-xs font-bold uppercase tracking-widest text-[#8a7560] mb-1">Seus agentes</p>
@@ -203,7 +210,6 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* 3. Funcionalidades */}
       <section id="funcionalidades" className="bg-[#fffdf0] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-5 md:px-10">
           <p className="text-xs font-bold uppercase tracking-widest text-[#8a7560] mb-3 text-center">O que a ColméIA faz por você</p>
@@ -211,7 +217,6 @@ export default function LandingPage({ onSwitch }) {
             Três agentes especializados para sua rotina clínica
           </h2>
 
-          {/* Agent 1 — full width featured */}
           <div className="bg-[#fef3c7] rounded-2xl p-6 md:p-10 mb-6 border border-[#f5e6b8]">
             <div className="flex flex-col md:flex-row md:items-start md:gap-10">
               <div className="flex-shrink-0 mb-4 md:mb-0">
@@ -236,9 +241,7 @@ export default function LandingPage({ onSwitch }) {
             </div>
           </div>
 
-          {/* Agents 2 & 3 side by side */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Agent 2 */}
             <div className="bg-white rounded-2xl p-6 md:p-8 border border-[#f5e6b8]">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: '#bf782e15' }}>
                 <AgentIcon icon="instagram" size={24} style={{ color: '#bf782e' }} />
@@ -257,7 +260,6 @@ export default function LandingPage({ onSwitch }) {
               </div>
             </div>
 
-            {/* Agent 3 */}
             <div className="bg-white rounded-2xl p-6 md:p-8 border border-[#f5e6b8]">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: '#d7a53c15' }}>
                 <AgentIcon icon="userPlus" size={24} style={{ color: '#d7a53c' }} />
@@ -279,7 +281,6 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* 4. Como funciona */}
       <section className="bg-[#fef3c7] relative overflow-hidden py-16 md:py-24">
         <HexPattern />
         <div className="max-w-7xl mx-auto px-5 md:px-10 relative">
@@ -303,7 +304,6 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* 5. Comparativo */}
       <section className="bg-[#fffdf0] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-5 md:px-10">
           <p className="text-xs font-bold uppercase tracking-widest text-[#8a7560] mb-3 text-center">Por que ColméIA</p>
@@ -311,34 +311,31 @@ export default function LandingPage({ onSwitch }) {
             Com ColméIA vs Sem ColméIA
           </h2>
 
-          {/* Desktop table */}
           <div className="hidden md:block max-w-3xl mx-auto">
             <div className="grid grid-cols-[1fr_1fr_1fr] gap-0 rounded-2xl overflow-hidden border border-[#f5e6b8]">
-              {/* Header row */}
               <div className="bg-[#f5e6b8] p-4 font-bold text-sm text-[#4a3520]">Aspecto</div>
               <div className="bg-[#fef3c7] p-4 font-bold text-sm text-[#69080b] text-center">Com ColméIA ✓</div>
               <div className="bg-[#f0f0f0] p-4 font-bold text-sm text-[#8a7560] text-center">Sem ColméIA</div>
               {COMPARISON.map((row, i) => (
-                <>
-                  <div key={`a-${i}`} className={`p-4 text-sm font-semibold text-[#4a3520] ${i % 2 === 0 ? 'bg-white' : 'bg-[#fffdf0]'}`}>{row.aspect}</div>
-                  <div key={`w-${i}`} className={`p-4 text-sm text-[#4a3520] ${i % 2 === 0 ? 'bg-[#fffbf0]' : 'bg-[#fef9e8]'}`}>
+                <Fragment key={i}>
+                  <div className={`p-4 text-sm font-semibold text-[#4a3520] ${i % 2 === 0 ? 'bg-white' : 'bg-[#fffdf0]'}`}>{row.aspect}</div>
+                  <div className={`p-4 text-sm text-[#4a3520] ${i % 2 === 0 ? 'bg-[#fffbf0]' : 'bg-[#fef9e8]'}`}>
                     <div className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-[#69080b] mt-0.5 flex-shrink-0" />
                       <span>{row.with}</span>
                     </div>
                   </div>
-                  <div key={`wo-${i}`} className={`p-4 text-sm text-[#8a7560] ${i % 2 === 0 ? 'bg-[#f8f8f8]' : 'bg-[#f2f2f2]'}`}>
+                  <div className={`p-4 text-sm text-[#8a7560] ${i % 2 === 0 ? 'bg-[#f8f8f8]' : 'bg-[#f2f2f2]'}`}>
                     <div className="flex items-start gap-2">
                       <X className="w-4 h-4 text-[#c0b0a0] mt-0.5 flex-shrink-0" />
                       <span>{row.without}</span>
                     </div>
                   </div>
-                </>
+                </Fragment>
               ))}
             </div>
           </div>
 
-          {/* Mobile cards */}
           <div className="md:hidden space-y-4">
             {COMPARISON.map((row, i) => (
               <div key={i} className="rounded-xl overflow-hidden border border-[#f5e6b8]">
@@ -359,7 +356,112 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* 6. Preços */}
+      <section className="bg-[#fef3c7] py-16 md:py-24 overflow-hidden relative">
+        <HexPattern />
+        <div className="max-w-7xl mx-auto px-5 md:px-10 relative">
+          <div className="relative inline-block w-full text-center mb-14">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#69080b]/50 mb-3 flex items-center justify-center gap-3">
+              <span className="w-8 h-[1.5px] bg-[#d7a53c] rounded" />
+              Conheça a plataforma
+              <span className="w-8 h-[1.5px] bg-[#d7a53c] rounded" />
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#69080b] mb-4 leading-tight">
+              Simples de usar.<br className="hidden sm:block" /> Poderosa pra transformar.
+            </h2>
+            <p className="text-sm text-[#8a7560] max-w-md mx-auto leading-relaxed">
+              Três agentes de IA especializados em psicologia infantil, prontos pra te ajudar no consultório e fora dele.
+            </p>
+            <img
+              src="/icone.png"
+              alt=""
+              className="absolute -right-2 -top-4 md:right-8 md:-top-6 w-12 md:w-16 opacity-25 animate-[float_4s_ease-in-out_infinite] pointer-events-none select-none"
+              draggable={false}
+            />
+          </div>
+
+          <div className="flex flex-col gap-16 md:gap-20">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-[#d7a53c]/20 rounded-full blur-[60px] scale-75 pointer-events-none" />
+                <img
+                  src="/mockups/onboarding-macbook.png"
+                  alt="Tela de onboarding da ColméIA Infantil"
+                  className="relative w-full h-auto drop-shadow-xl transition-transform duration-500 group-hover:-translate-y-1.5"
+                  draggable={false}
+                />
+              </div>
+              <div className="text-center md:text-left">
+                <HexStep n="1" />
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#69080b] mb-3 leading-tight">Começar é fácil</h3>
+                <p className="text-[15px] text-[#8a7560] leading-relaxed max-w-sm mx-auto md:mx-0 mb-5">
+                  Em poucos passos você configura sua conta e recebe dicas de como aproveitar o máximo da plataforma.
+                </p>
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#f5e6b8]/60 rounded-full text-xs font-semibold text-[#69080b]">
+                  <Check className="w-4 h-4" />
+                  Tutorial guiado em poucos passos
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12">
+              <div className="text-center md:text-left md:order-1">
+                <HexStep n="2" />
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#69080b] mb-3 leading-tight">Tudo num só lugar</h3>
+                <p className="text-[15px] text-[#8a7560] leading-relaxed max-w-sm mx-auto md:mx-0 mb-5">
+                  Planeje sessões, crie conteúdo para redes sociais e receba estratégias de captação — tudo dentro da mesma plataforma.
+                </p>
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#f5e6b8]/60 rounded-full text-xs font-semibold text-[#69080b]">
+                  <Sparkles className="w-4 h-4" />
+                  3 agentes especializados
+                </span>
+              </div>
+              <div className="relative group md:order-2">
+                <div className="absolute inset-0 bg-[#d7a53c]/20 rounded-full blur-[60px] scale-75 pointer-events-none" />
+                <svg className="absolute -right-6 -bottom-6 w-32 h-32 opacity-[0.08] pointer-events-none" viewBox="0 0 120 120" fill="none">
+                  <path d="M30 10L50 0L70 10L70 30L50 40L30 30Z" stroke="#69080b" strokeWidth="1" />
+                  <path d="M70 10L90 0L110 10L110 30L90 40L70 30Z" stroke="#69080b" strokeWidth="1" />
+                  <path d="M50 40L70 30L90 40L90 60L70 70L50 60Z" stroke="#69080b" strokeWidth="1" />
+                  <path d="M10 30L30 20L50 30L50 50L30 60L10 50Z" stroke="#69080b" strokeWidth="1" />
+                  <path d="M30 60L50 50L70 60L70 80L50 90L30 80Z" stroke="#69080b" strokeWidth="1" />
+                  <path d="M70 60L90 50L110 60L110 80L90 90L70 80Z" stroke="#69080b" strokeWidth="1" />
+                </svg>
+                <img
+                  src="/mockups/dashboard-dell.png"
+                  alt="Dashboard da ColméIA com 3 agentes de IA"
+                  className="relative w-full h-auto drop-shadow-xl transition-transform duration-500 group-hover:-translate-y-1.5"
+                  draggable={false}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-center gap-8 md:gap-16">
+              <div className="text-center md:text-left">
+                <HexStep n="3" />
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#69080b] mb-3 leading-tight">No consultório ou onde você estiver</h3>
+                <p className="text-[15px] text-[#8a7560] leading-relaxed max-w-sm mx-auto md:mx-0 mb-5">
+                  Planeje seus atendimentos de qualquer lugar. Anexe fichas, peça sugestões e a IA estrutura a abordagem pra você.
+                </p>
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#f5e6b8]/60 rounded-full text-xs font-semibold text-[#69080b]">
+                  <MessageCircle className="w-4 h-4" />
+                  100% responsivo
+                </span>
+              </div>
+              <div className="relative group mx-auto md:mx-0">
+                <div className="absolute inset-0 bg-[#d7a53c]/20 rounded-full blur-[60px] scale-90 pointer-events-none" />
+                <img
+                  src="/mockups/chat-iphone.png"
+                  alt="ColméIA Infantil no celular"
+                  className="relative w-56 md:w-64 h-auto drop-shadow-xl transition-transform duration-500 group-hover:-translate-y-1.5"
+                  draggable={false}
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       <section id="precos" className="bg-[#fffdf0] py-16 md:py-24 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-5 md:px-10">
           <p className="text-xs font-bold uppercase tracking-widest text-[#8a7560] mb-3 text-center">Planos</p>
@@ -368,7 +470,6 @@ export default function LandingPage({ onSwitch }) {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {/* Mensal */}
             <div className="bg-white rounded-2xl p-7 border-2 border-[#f5e6b8]">
               <p className="text-sm font-semibold text-[#8a7560] mb-4">Mensal</p>
               <div className="flex items-baseline gap-1 mb-6">
@@ -393,7 +494,6 @@ export default function LandingPage({ onSwitch }) {
               </a>
             </div>
 
-            {/* Anual */}
             <div className="bg-[#69080b] rounded-2xl p-7 relative">
               <span className="absolute -top-3 right-6 bg-[#face0a] text-[#69080b] text-xs font-bold px-3 py-1 rounded-full shadow-sm">
                 Economia de {PRICING.yearly.savings}
@@ -425,7 +525,6 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* 7. FAQ */}
       <section id="duvidas" className="bg-[#fef3c7] relative overflow-hidden py-16 md:py-24">
         <HexPattern />
         <div className="max-w-7xl mx-auto px-5 md:px-10 relative">
@@ -468,7 +567,6 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* 8. CTA Final */}
       <section className="bg-[#face0a] relative overflow-hidden">
         <img
           src="/favicon.png"
@@ -494,7 +592,6 @@ export default function LandingPage({ onSwitch }) {
         </div>
       </section>
 
-      {/* 9. Footer */}
       <footer className="bg-[#69080b]">
         <div className="max-w-7xl mx-auto px-5 md:px-10 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from './lib/AuthContext'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
@@ -7,12 +7,29 @@ import RecoveryPage from './pages/RecoveryPage'
 import TermosPage from './pages/TermosPage'
 import PrivacidadePage from './pages/PrivacidadePage'
 import SuportePage from './pages/SuportePage'
+import CompraAprovadaPage from './pages/CompraAprovadaPage'
+import AguardandoPagamentoPage from './pages/AguardandoPagamentoPage'
+import AnaliseCreditoPage from './pages/AnaliseCreditoPage'
 import HomePage from './pages/HomePage'
 import Logo from './components/Logo'
 
 export default function App() {
   const { user, loading } = useAuth()
   const [authPage, setAuthPage] = useState('landing')
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('pago') === 'true') {
+      setAuthPage('compra-aprovada')
+      window.history.replaceState({}, '', window.location.pathname)
+    } else if (params.get('aguardando') === 'true') {
+      setAuthPage('aguardando-pagamento')
+      window.history.replaceState({}, '', window.location.pathname)
+    } else if (params.get('analise') === 'true') {
+      setAuthPage('analise-credito')
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+  }, [])
 
   if (loading) {
     return (
@@ -41,6 +58,12 @@ export default function App() {
         return <PrivacidadePage onSwitch={setAuthPage} />
       case 'suporte':
         return <SuportePage onSwitch={setAuthPage} />
+      case 'compra-aprovada':
+        return <CompraAprovadaPage onSwitch={setAuthPage} />
+      case 'aguardando-pagamento':
+        return <AguardandoPagamentoPage onSwitch={setAuthPage} />
+      case 'analise-credito':
+        return <AnaliseCreditoPage onSwitch={setAuthPage} />
       default:
         return <LandingPage onSwitch={setAuthPage} />
     }

@@ -31,7 +31,6 @@ function StepIndicator({ current, total }) {
   )
 }
 
-// Step 1: Welcome
 function Step1() {
   return (
     <div className="flex flex-col items-center text-center px-2">
@@ -49,7 +48,6 @@ function Step1() {
   )
 }
 
-// Step 2: Agents
 function Step2() {
   const agents = [
     {
@@ -80,7 +78,6 @@ function Step2() {
       <h2 className="text-xl md:text-2xl font-extrabold text-primary-600 mb-2 text-center">Seus 3 agentes</h2>
       <p className="text-sm text-secondary mb-6 text-center">Cada um é especialista em uma área da sua rotina</p>
 
-      {/* Simulated sidebar panel */}
       <div className="bg-white rounded-2xl shadow-card border border-primary-50 overflow-hidden max-w-sm mx-auto">
         <div className="bg-[#fff8e1] px-4 py-3 border-b border-[#f5e6b8]">
           <span className="text-xs font-bold text-secondary uppercase tracking-wider">Agentes</span>
@@ -107,16 +104,13 @@ function Step2() {
   )
 }
 
-// Step 3: Chat demo
 function Step3() {
   return (
     <div className="px-2">
       <h2 className="text-xl md:text-2xl font-extrabold text-primary-600 mb-2 text-center">Como funciona uma conversa</h2>
       <p className="text-sm text-secondary mb-6 text-center">É como mandar uma mensagem no WhatsApp</p>
 
-      {/* Simulated chat */}
       <div className="bg-white rounded-2xl shadow-card border border-primary-50 max-w-sm mx-auto overflow-hidden">
-        {/* Chat header */}
         <div className="bg-[#fff8e1] px-4 py-3 border-b border-[#f5e6b8] flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#69080b12' }}>
             <Calendar size={14} style={{ color: '#69080b' }} />
@@ -125,7 +119,6 @@ function Step3() {
         </div>
 
         <div className="p-4 space-y-3">
-          {/* User bubble */}
           <div className="flex justify-end">
             <div className="bg-[#face0a]/30 rounded-2xl rounded-br-md px-4 py-2.5 max-w-[85%]">
               <p className="text-sm text-text-primary leading-relaxed">
@@ -134,7 +127,6 @@ function Step3() {
             </div>
           </div>
 
-          {/* AI bubble */}
           <div className="flex justify-start">
             <div className="bg-[#f5f0e0] rounded-2xl rounded-bl-md px-4 py-2.5 max-w-[85%]">
               <p className="text-sm text-text-primary leading-relaxed">
@@ -149,7 +141,6 @@ function Step3() {
         </div>
       </div>
 
-      {/* Tip */}
       <div className="flex items-start gap-2.5 mt-5 max-w-sm mx-auto bg-[#fff8e1] rounded-xl px-4 py-3">
         <Lightbulb size={16} className="text-[#d7a53c] flex-shrink-0 mt-0.5" />
         <p className="text-xs text-text-secondary leading-relaxed">
@@ -160,7 +151,6 @@ function Step3() {
   )
 }
 
-// Step 4: Tips + CTA
 function Step4({ onComplete }) {
   const tips = [
     {
@@ -227,7 +217,6 @@ export default function OnboardingTutorial({ onComplete }) {
 
   return (
     <div className="fixed inset-0 z-[60] bg-[#fffdf0] flex flex-col font-sans">
-      {/* Content area */}
       <div className="flex-1 overflow-y-auto flex flex-col justify-center px-6 py-10">
         <div className="max-w-lg mx-auto w-full">
           <StepIndicator current={step} total={TOTAL_STEPS} />
@@ -237,7 +226,6 @@ export default function OnboardingTutorial({ onComplete }) {
         </div>
       </div>
 
-      {/* Navigation footer */}
       <div className="border-t border-primary-100 bg-white/80 backdrop-blur-sm px-6 py-4">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <button
