@@ -32,6 +32,3 @@ export const CHECKOUT_URLS = {
 // Timeouts
 export const AI_TIMEOUT_MS = 90_000
 export const QUERY_TIMEOUT_MS = 8_000
-
-// PDF.js worker
-export const PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
