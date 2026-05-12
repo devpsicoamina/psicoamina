@@ -20,7 +20,13 @@ function withTimeout(promise, ms = QUERY_TIMEOUT_MS) {
 
 // Auth helpers
 
-export async function signUp(email, password, fullname) {
+export const TERMS_VERSION = '2026-05-12'
+
+export async function signUp(email, password, fullname, termsAccepted) {
+  if (!termsAccepted) {
+    throw new Error('Você precisa aceitar os Termos de Uso e a Política de Privacidade.')
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -33,6 +39,8 @@ export async function signUp(email, password, fullname) {
       await supabase.from('users').insert({
         user_auth_id: data.user.id,
         fullname: fullname || null,
+        accepted_terms_at: new Date().toISOString(),
+        accepted_terms_version: TERMS_VERSION,
       })
     } catch (e) {
       // Profile will be created on first login via getOrCreateUserProfile
@@ -99,12 +107,20 @@ export async function getOrCreateUserProfile(authId, fullname) {
   }
 }
 
+const PROFILE_UPDATABLE_FIELDS = ['fullname', 'profile_pic_url']
+
 export async function updateUserProfile(authId, updates) {
-  if (isDemoMode()) return { ...DEMO_PROFILE, ...updates }
+  const safeUpdates = {}
+  for (const field of PROFILE_UPDATABLE_FIELDS) {
+    if (updates[field] !== undefined) safeUpdates[field] = updates[field]
+  }
+  if (Object.keys(safeUpdates).length === 0) return null
+
+  if (isDemoMode()) return { ...DEMO_PROFILE, ...safeUpdates }
 
   const { data, error } = await supabase
     .from('users')
-    .update(updates)
+    .update(safeUpdates)
     .eq('user_auth_id', authId)
     .select()
     .single()
@@ -177,7 +193,7 @@ export async function createChat(authId, agentType) {
   return data
 }
 
-export async function updateChatTitle(chatId, title) {
+export async function updateChatTitle(chatId, authId, title) {
   if (isDemoMode()) {
     const chat = DEMO_CHATS.find(c => c.id === chatId)
     if (chat) chat.title = title
@@ -188,10 +204,11 @@ export async function updateChatTitle(chatId, title) {
     .from('chats')
     .update({ title })
     .eq('id', chatId)
+    .eq('user_auth_id', authId)
   if (error) throw error
 }
 
-export async function deleteChat(chatId) {
+export async function deleteChat(chatId, authId) {
   if (isDemoMode()) {
     const idx = DEMO_CHATS.findIndex(c => c.id === chatId)
     if (idx > -1) DEMO_CHATS.splice(idx, 1)
@@ -199,22 +216,28 @@ export async function deleteChat(chatId) {
     return
   }
 
-  await supabase.from('chat_messages').delete().eq('chat_id', chatId)
-  const { error } = await supabase.from('chats').delete().eq('id', chatId)
+  await supabase.from('chat_messages').delete()
+    .eq('chat_id', chatId)
+    .eq('user_auth_id', authId)
+  const { error } = await supabase.from('chats').delete()
+    .eq('id', chatId)
+    .eq('user_auth_id', authId)
   if (error) throw error
 }
 
 // Messages
 
-export async function getMessages(chatId) {
+export async function getMessages(chatId, authId) {
   if (isDemoMode()) return [...(DEMO_MESSAGES[chatId] || [])]
 
-  const { data, error } = await supabase
+  let q = supabase
     .from('chat_messages')
     .select('*')
     .eq('chat_id', chatId)
     .order('created_at', { ascending: true })
+  if (authId) q = q.eq('user_auth_id', authId)
 
+  const { data, error } = await q
   if (error) throw error
   return data || []
 }
@@ -275,10 +298,12 @@ export async function saveFileToChat(chatId, authId, file, extractedText) {
     return
   }
 
-  const path = `${authId}/${chatId}/${file.name}`
+  const ext = (file.name.match(/\.[a-zA-Z0-9]{1,5}$/)?.[0] || '.pdf').toLowerCase()
+  const safeId = crypto.randomUUID()
+  const path = `${authId}/${chatId}/${safeId}${ext}`
   const { error: uploadError } = await supabase.storage
     .from('chat-attachments')
-    .upload(path, file, { upsert: true })
+    .upload(path, file, { upsert: false })
 
   if (uploadError) {
     // Upload falhou, mas o texto extraído já foi salvo na tabela chats abaixo
@@ -291,13 +316,14 @@ export async function saveFileToChat(chatId, authId, file, extractedText) {
       attached_file_name: file.name,
     })
     .eq('id', chatId)
+    .eq('user_auth_id', authId)
 
   if (updateError) throw updateError
 }
 
 // Edge function: chat-ai
 
-export async function callChatAI({ chatId, userMessage, prompt, createTitle = false, fileContext = null }) {
+export async function callChatAI({ chatId, userMessage, createTitle = false, fileContext = null }) {
   if (isDemoMode()) {
     // Simulate AI delay
     await new Promise(r => setTimeout(r, 1500 + Math.random() * 1000))
@@ -330,7 +356,6 @@ export async function callChatAI({ chatId, userMessage, prompt, createTitle = fa
   const body = {
     chat_id: chatId,
     user_message: userMessage,
-    prompt,
     createTitle,
   }
   if (fileContext) {
@@ -355,19 +380,22 @@ export async function callChatAI({ chatId, userMessage, prompt, createTitle = fa
     clearTimeout(timeoutId)
 
     if (response.status === 403) {
-      const respBody = await response.json()
+      const respBody = await response.json().catch(() => ({}))
       if (respBody.error === 'subscription_required') {
         throw { type: 'subscription_required', message: 'Assine para continuar usando.' }
       }
       if (respBody.error === 'token_limit_reached') {
         throw { type: 'token_limit_reached', message: 'Seus créditos mensais acabaram.' }
       }
-      throw new Error(respBody.error || 'Forbidden')
+      throw new Error('forbidden')
+    }
+
+    if (response.status === 429) {
+      throw { type: 'rate_limit', message: 'Você está enviando mensagens muito rápido. Aguarde um momento.' }
     }
 
     if (!response.ok) {
-      const text = await response.text()
-      throw new Error(`Edge function error: ${response.status} ${text}`)
+      throw new Error(`edge_function_error_${response.status}`)
     }
 
     return response.json()

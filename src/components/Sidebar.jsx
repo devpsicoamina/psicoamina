@@ -43,7 +43,7 @@ export default function Sidebar({
   async function handleRename(chatId) {
     if (!editTitle.trim()) { setEditingChatId(null); return }
     try {
-      await updateChatTitle(chatId, editTitle.trim())
+      await updateChatTitle(chatId, user.id, editTitle.trim())
       setEditingChatId(null)
       onChatsChange()
     } catch {
@@ -53,7 +53,7 @@ export default function Sidebar({
 
   async function handleDelete(chatId) {
     try {
-      await deleteChat(chatId)
+      await deleteChat(chatId, user.id)
       if (selectedChatId === chatId) onSelectChat(null)
       onChatsChange()
       setDeletingChat(null)

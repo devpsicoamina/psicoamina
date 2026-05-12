@@ -3,12 +3,20 @@ import { Check, Eye, Loader2 } from 'lucide-react'
 import { signUp } from '../lib/supabase'
 import Logo from '../components/Logo'
 
+function isStrongPassword(pw) {
+  if (pw.length < 8) return false
+  const hasLetter = /[A-Za-z]/.test(pw)
+  const hasDigit = /\d/.test(pw)
+  return hasLetter && hasDigit
+}
+
 export default function SignupPage({ onSwitch }) {
   const [fullname, setFullname] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -25,14 +33,18 @@ export default function SignupPage({ onSwitch }) {
       setError('As senhas não coincidem.')
       return
     }
-    if (password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres.')
+    if (!isStrongPassword(password)) {
+      setError('A senha deve ter no mínimo 8 caracteres, com letras e números.')
+      return
+    }
+    if (!termsAccepted) {
+      setError('Você precisa aceitar os Termos de Uso e a Política de Privacidade.')
       return
     }
 
     setLoading(true)
     try {
-      await signUp(email, password, fullname.trim())
+      await signUp(email, password, fullname.trim(), termsAccepted)
       setSuccess(true)
     } catch (err) {
       setError(err.message)
@@ -105,8 +117,9 @@ export default function SignupPage({ onSwitch }) {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                autoComplete="new-password"
                 className="w-full px-4 py-3 border-2 border-secondary/30 rounded-xl focus:ring-0 focus:border-primary-600 outline-none transition bg-white text-text-primary pr-12"
-                placeholder="Mínimo 6 caracteres"
+                placeholder="Mínimo 8 caracteres, letras + números"
                 required
               />
               <button
@@ -125,11 +138,28 @@ export default function SignupPage({ onSwitch }) {
               type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
+              autoComplete="new-password"
               className="w-full px-4 py-3 border-2 border-secondary/30 rounded-xl focus:ring-0 focus:border-primary-600 outline-none transition bg-white text-text-primary"
               placeholder="Repita a senha"
               required
             />
           </div>
+
+          <label className="flex items-start gap-2 text-sm text-text-secondary cursor-pointer">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={e => setTermsAccepted(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-primary-600"
+              required
+            />
+            <span>
+              Li e concordo com os{' '}
+              <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-primary-600 font-semibold hover:underline">Termos de Uso</a>
+              {' '}e a{' '}
+              <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-primary-600 font-semibold hover:underline">Política de Privacidade</a>.
+            </span>
+          </label>
 
           {error && (
             <div className="bg-accent-error/10 text-accent-error px-4 py-2.5 rounded-xl text-sm font-medium animate-fade-in">

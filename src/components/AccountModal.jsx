@@ -13,6 +13,7 @@ export default function AccountModal({ open, onClose }) {
   const [saved, setSaved] = useState(false)
   const [showPricing, setShowPricing] = useState(false)
   const [resetSent, setResetSent] = useState(false)
+  const [confirmReset, setConfirmReset] = useState(false)
 
   if (!open) return null
 
@@ -161,11 +162,12 @@ export default function AccountModal({ open, onClose }) {
 
                 <button
                   onClick={() => {
-                    if (user?.email) {
-                      resetPassword(user.email)
-                      setResetSent(true)
-                      setTimeout(() => setResetSent(false), 3000)
-                    }
+                    if (!user?.email) return
+                    if (!confirmReset) { setConfirmReset(true); return }
+                    resetPassword(user.email)
+                    setResetSent(true)
+                    setConfirmReset(false)
+                    setTimeout(() => setResetSent(false), 3000)
                   }}
                   className="w-full flex items-center gap-3 px-4 py-4 rounded-xl border-2 border-gray-100 hover:border-primary-200 hover:bg-bg-alternate transition text-left"
                 >
@@ -174,9 +176,13 @@ export default function AccountModal({ open, onClose }) {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-text-primary">
-                      {resetSent ? '✓ Email enviado!' : 'Alterar senha'}
+                      {resetSent ? '✓ Email enviado!' : confirmReset ? 'Confirmar envio do link' : 'Alterar senha'}
                     </p>
-                    <p className="text-xs text-secondary">Enviar link de redefinição por email</p>
+                    <p className="text-xs text-secondary">
+                      {confirmReset
+                        ? 'Clique novamente para enviar o link de redefinição'
+                        : 'Enviar link de redefinição por email'}
+                    </p>
                   </div>
                 </button>
 

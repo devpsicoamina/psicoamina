@@ -1,17 +1,25 @@
 import { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import * as pdfjsLib from 'pdfjs-dist'
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { Check, Copy, Menu, FileText, X, Loader2, Upload, ArrowRight } from 'lucide-react'
-import { getMessages, insertMessage, callChatAI, getAgentPrompt, saveFileToChat } from '../lib/supabase'
+import { getMessages, insertMessage, callChatAI, saveFileToChat } from '../lib/supabase'
 import { getAgent, AGENTS } from '../lib/agents'
-import { PDFJS_WORKER_URL } from '../lib/config'
 import { useAuth } from '../lib/AuthContext'
 import AgentIcon from './AgentIcon'
 import Modal from './Modal'
 import CreditLimitModal from './CreditLimitModal'
 import PricingModal from './PricingModal'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
+
+async function isPdfMagic(file) {
+  const slice = await file.slice(0, 5).arrayBuffer()
+  const bytes = new Uint8Array(slice)
+  // %PDF- = [0x25, 0x50, 0x44, 0x46, 0x2D]
+  return bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 &&
+         bytes[3] === 0x46 && bytes[4] === 0x2D
+}
 
 async function extractTextFromPDF(file) {
   const arrayBuffer = await file.arrayBuffer()
@@ -234,7 +242,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
   async function loadMessages() {
     setLoadingMessages(true)
     try {
-      const msgs = await getMessages(chat.id)
+      const msgs = await getMessages(chat.id, user?.id)
       setMessages(msgs)
     } catch (err) {
       // Fallback: lista de mensagens vazia
@@ -252,6 +260,11 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
     }
     if (file.size > 20 * 1024 * 1024) {
       setErrorModal({ title: 'Arquivo muito grande', message: 'O tamanho máximo é 20MB.' })
+      return
+    }
+    if (!(await isPdfMagic(file))) {
+      setErrorModal({ title: 'Formato inválido', message: 'O arquivo não é um PDF válido.' })
+      if (fileInputRef.current) fileInputRef.current.value = ''
       return
     }
 
@@ -309,18 +322,16 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
 
     try {
       await insertMessage(chat.id, user.id, text, 'human')
-      const prompt = await getAgentPrompt(chat.agent_type)
       const isFirstMessage = messages.length === 0
 
       await callChatAI({
         chatId: chat.id,
         userMessage: text,
-        prompt,
         createTitle: isFirstMessage,
         fileContext: currentFileContext,
       })
 
-      const freshMessages = await getMessages(chat.id)
+      const freshMessages = await getMessages(chat.id, user.id)
       setMessages(freshMessages)
 
       // Find the newest agent message and animate it
