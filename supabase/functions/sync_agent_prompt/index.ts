@@ -9,22 +9,56 @@ const DOCS_MAP: Record<AgentType, string> = {
   customerAcquisition: "1PGPXtEJUxhIx3tcjklxS1nmXvITLeNDr996nc5zHolU",
 };
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+const ALLOWED_ORIGINS = new Set([
+  "https://colmeiainfantil.com.br",
+  "https://www.colmeiainfantil.com.br",
+  "http://localhost:5173",
+]);
+
+function corsFor(req: Request): Record<string, string> {
+  const origin = req.headers.get("origin") ?? "";
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.has(origin) ? origin : "null",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
 
 serve(async (req) => {
+  const corsHeaders = corsFor(req);
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
+    const jwt = authHeader.replace("Bearer ", "");
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      { global: { headers: { Authorization: `Bearer ${jwt}` } } }
     );
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("user_auth_id", user.id)
+      .maybeSingle();
+
+    if (profileError || profile?.role !== "admin") {
+      return new Response("Forbidden", { status: 403, headers: corsHeaders });
+    }
 
     const { agentType } = await req.json();
     if (!(agentType in DOCS_MAP)) {
@@ -35,22 +69,29 @@ serve(async (req) => {
       `https://docs.google.com/document/d/${DOCS_MAP[agentType as AgentType]}/export?format=txt`
     );
     if (!docRes.ok) {
-      throw new Error(`Failed to fetch doc: ${docRes.status}`);
+      console.error("sync_agent_prompt: fetch failed", docRes.status);
+      return new Response("Failed to fetch doc", { status: 502, headers: corsHeaders });
     }
 
     const text = await docRes.text();
 
-    await supabase
+    const { error: updateError } = await supabase
       .from("agents_prompts")
       .update({ prompt: text.trim() })
       .eq("agent_type", agentType);
+
+    if (updateError) {
+      console.error("sync_agent_prompt update:", updateError.message);
+      return new Response("DB update failed", { status: 500, headers: corsHeaders });
+    }
 
     return new Response(
       JSON.stringify({ success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
-    console.error("sync_agent_prompt:", err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("sync_agent_prompt:", msg);
     return new Response("Internal error", { status: 500, headers: corsHeaders });
   }
 });

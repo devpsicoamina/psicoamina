@@ -1,11 +1,24 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
 Deno.serve(async (req: Request) => {
   try {
     const cronSecret = Deno.env.get("CRON_SECRET");
-    const providedSecret = req.headers.get("X-Cron-Secret");
-    if (!cronSecret || providedSecret !== cronSecret) {
+    const providedSecret = req.headers.get("X-Cron-Secret") ?? "";
+    if (!cronSecret || cronSecret.length < 16) {
+      console.error("reset-monthly-tokens: CRON_SECRET missing or too short");
+      return new Response("Server misconfigured", { status: 500 });
+    }
+    if (!constantTimeEqual(providedSecret, cronSecret)) {
       return new Response("Unauthorized", { status: 401 });
     }
 
@@ -24,7 +37,8 @@ Deno.serve(async (req: Request) => {
       .select("user_auth_id");
 
     if (error) {
-      throw new Error("Failed to reset tokens: " + error.message);
+      console.error("reset-monthly-tokens: reset error:", error.message);
+      return new Response("Reset failed", { status: 500 });
     }
 
     const resetCount = data?.length || 0;
@@ -38,7 +52,7 @@ Deno.serve(async (req: Request) => {
       .select("user_auth_id");
 
     if (expError) {
-      console.error("reset-monthly-tokens: error deactivating expired:", expError.message);
+      console.error("reset-monthly-tokens: deactivate error:", expError.message);
     }
 
     return new Response(
@@ -49,11 +63,9 @@ Deno.serve(async (req: Request) => {
       }),
       { headers: { "Content-Type": "application/json" } }
     );
-  } catch (err: any) {
-    console.error("reset-monthly-tokens:", err.message);
-    return new Response(
-      JSON.stringify({ error: err.message }),
-      { status: 500 }
-    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("reset-monthly-tokens:", msg);
+    return new Response("Internal error", { status: 500 });
   }
 });
