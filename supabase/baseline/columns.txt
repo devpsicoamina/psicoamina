@@ -1,0 +1,42 @@
+agents_prompts.id: bigint NOT NULL
+agents_prompts.created_at: timestamp with time zone NOT NULL default now()
+agents_prompts.prompt: text NULL
+agents_prompts.agent_type: USER-DEFINED NULL
+chat_messages.id: uuid NOT NULL default gen_random_uuid()
+chat_messages.chat_id: uuid NOT NULL
+chat_messages.user_auth_id: uuid NOT NULL
+chat_messages.message: text NOT NULL
+chat_messages.created_at: timestamp with time zone NULL default now()
+chat_messages.sender: USER-DEFINED NULL
+chat_messages.apply_typing_effect: boolean NULL default true
+chats.id: uuid NOT NULL default gen_random_uuid()
+chats.user_auth_id: uuid NOT NULL
+chats.title: text NULL
+chats.agent_type: USER-DEFINED NOT NULL
+chats.created_at: timestamp with time zone NULL default now()
+chats.attached_file_text: text NULL
+chats.attached_file_name: text NULL
+payment_events.transaction_id: text NOT NULL
+payment_events.event: text NOT NULL
+payment_events.buyer_email: text NULL
+payment_events.processed_at: timestamp with time zone NOT NULL default now()
+rate_limits.id: bigint NOT NULL default nextval('rate_limits_id_seq'::regclass)
+rate_limits.key: text NOT NULL
+rate_limits.ts: timestamp with time zone NOT NULL default clock_timestamp()
+user_monthly_usage.id: bigint NOT NULL
+user_monthly_usage.created_at: timestamp with time zone NOT NULL default now()
+user_monthly_usage.user_auth_id: uuid NULL
+user_monthly_usage.tokens_used: bigint NULL
+user_monthly_usage.progress_bar_value: double precision NULL
+users.id: bigint NOT NULL
+users.created_at: timestamp with time zone NOT NULL default now()
+users.user_auth_id: uuid NULL
+users.fullname: text NULL
+users.profile_pic_url: text NULL default 'https://nwgnhuesqdnedupykthj.supabase.co/storage/v1/object/public/profilePic/pics/default-profile-pic.png'::text
+users.stripe_customer_id: text NULL
+users.plan_type: text NULL default 'monthly'::text
+users.subscription_active: boolean NULL default false
+users.current_period_end: timestamp without time zone NULL
+users.role: text NOT NULL default 'user'::text
+users.accepted_terms_at: timestamp with time zone NULL
+users.accepted_terms_version: text NULL

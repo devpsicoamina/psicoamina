@@ -1,0 +1,7 @@
+public.agents_prompts [readOnly] cmd=r USING(true) CHECK(—)
+public.chat_messages [Enable users to view their own data only] cmd=* USING((( SELECT auth.uid() AS uid) = user_auth_id)) CHECK(—)
+public.chats [nable users to view their own data only] cmd=* USING((( SELECT auth.uid() AS uid) = user_auth_id)) CHECK(—)
+public.user_monthly_usage [Allow authenticated insert own usage] cmd=a USING(—) CHECK((user_auth_id = auth.uid()))
+public.user_monthly_usage [Allow authenticated update own usage] cmd=w USING((user_auth_id = auth.uid())) CHECK(—)
+public.user_monthly_usage [Enable users to view their own data only] cmd=r USING((( SELECT auth.uid() AS uid) = user_auth_id)) CHECK(—)
+public.users [Enable users to view their own data only] cmd=* USING((( SELECT auth.uid() AS uid) = user_auth_id)) CHECK(—)

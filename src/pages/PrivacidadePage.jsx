@@ -10,7 +10,7 @@ export default function PrivacidadePage({ onSwitch }) {
         </button>
 
         <h1 className="text-2xl md:text-3xl font-extrabold text-[#69080b] mb-2">Política de Privacidade</h1>
-        <p className="text-sm text-[#8a7560] mb-8">Última atualização: abril de 2026</p>
+        <p className="text-sm text-[#8a7560] mb-8">Última atualização: maio de 2026 — versão 2026-05-12</p>
 
         <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#f5e6b8] space-y-6 text-[15px] text-[#4a3520] leading-relaxed">
 
@@ -43,7 +43,9 @@ export default function PrivacidadePage({ onSwitch }) {
 
           <section>
             <h2 className="text-lg font-bold text-[#69080b] mb-2">4. Uso de Inteligência Artificial</h2>
-            <p>As mensagens enviadas aos agentes são processadas pela API da OpenAI para gerar respostas. A OpenAI não utiliza dados enviados via API para treinar seus modelos. As conversas são armazenadas no banco de dados da plataforma (Supabase) e associadas à sua conta.</p>
+            <p className="mb-2">As mensagens enviadas aos agentes são processadas pela API da OpenAI (OpenAI, L.L.C., Estados Unidos) para gerar respostas. A OpenAI declara não utilizar dados enviados via API para treinar seus modelos (<a href="https://openai.com/enterprise-privacy" target="_blank" rel="noopener noreferrer" className="text-[#69080b] font-semibold hover:underline">política de privacidade da OpenAI</a>).</p>
+            <p className="mb-2">Quando você anexa um PDF a uma conversa, o conteúdo textual do documento é extraído localmente no seu navegador e enviado à OpenAI como parte da conversa. Você é avisada e dá consentimento explícito antes do primeiro envio.</p>
+            <p>As conversas e arquivos anexados são armazenados na Supabase (infraestrutura na União Europeia/EUA) associados à sua conta.</p>
           </section>
 
           <section>
@@ -89,12 +91,26 @@ export default function PrivacidadePage({ onSwitch }) {
 
           <section>
             <h2 className="text-lg font-bold text-[#69080b] mb-2">10. Retenção de Dados</h2>
-            <p>Seus dados são mantidos enquanto sua conta estiver ativa. Após o cancelamento, os dados são retidos por até 90 dias para possível reativação e, em seguida, excluídos permanentemente.</p>
+            <p className="mb-2">Definimos prazos específicos por tipo de dado:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li><strong>Conta e perfil:</strong> enquanto sua assinatura estiver ativa ou você tiver acessado a plataforma nos últimos 12 meses.</li>
+              <li><strong>Conversas e mensagens:</strong> 12 meses após a última atividade no chat. Após esse período, são apagadas automaticamente.</li>
+              <li><strong>Arquivos PDF anexados:</strong> 30 dias após o upload. Após esse prazo, os arquivos são removidos do Storage (o texto extraído para contexto permanece com a conversa até ela ser apagada).</li>
+              <li><strong>Logs de pagamento e billing:</strong> 5 anos, em cumprimento à legislação fiscal brasileira.</li>
+              <li><strong>Logs de ações sensíveis (login, troca de senha, etc):</strong> 12 meses.</li>
+              <li><strong>Backups do banco:</strong> 6 meses, depois descartados.</li>
+            </ul>
+            <p className="mt-2">Ao cancelar sua conta, todos os dados pessoais identificáveis são anonimizados imediatamente e o registro é apagado permanentemente em 90 dias.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-[#69080b] mb-2">11. Alterações</h2>
-            <p>Esta política pode ser atualizada periodicamente. Alterações significativas serão comunicadas por e-mail. A versão mais recente estará sempre disponível nesta página.</p>
+            <h2 className="text-lg font-bold text-[#69080b] mb-2">11. Encarregado de Proteção de Dados (DPO)</h2>
+            <p>Em conformidade com o art. 41 da LGPD, o Encarregado pelo tratamento de dados pessoais é <strong>Renan Teles</strong>. Para questões relacionadas a dados pessoais, contate <a href="mailto:contato@colmeiainfantil.com.br" className="text-[#69080b] font-semibold hover:underline">contato@colmeiainfantil.com.br</a>.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-[#69080b] mb-2">12. Alterações</h2>
+            <p>Esta política pode ser atualizada periodicamente. Alterações significativas serão comunicadas por e-mail e podem exigir reaceite. A versão mais recente estará sempre disponível nesta página.</p>
           </section>
 
         </div>

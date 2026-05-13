@@ -1,0 +1,4 @@
+find_user_id_by_email(p_email text) → uuid SECURITY DEFINER
+increment_token_usage(p_user_auth_id uuid, p_amount integer, p_token_limit integer) → integer SECURITY DEFINER
+rate_limit_check(p_key text, p_max integer, p_window_sec integer) → boolean SECURITY DEFINER
+verify_user_password(password text) → boolean

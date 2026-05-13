@@ -10,6 +10,24 @@ import AgentIcon from './AgentIcon'
 import Modal from './Modal'
 import CreditLimitModal from './CreditLimitModal'
 import PricingModal from './PricingModal'
+import PDFConsentModal from './PDFConsentModal'
+
+const PDF_CONSENT_KEY = 'pdfConsent.v1'
+function hasPdfConsent(userId) {
+  try {
+    const raw = localStorage.getItem(PDF_CONSENT_KEY)
+    if (!raw) return false
+    const data = JSON.parse(raw)
+    return data?.userId === userId && data?.accepted === true
+  } catch {
+    return false
+  }
+}
+function setPdfConsent(userId) {
+  try {
+    localStorage.setItem(PDF_CONSENT_KEY, JSON.stringify({ userId, accepted: true, at: new Date().toISOString() }))
+  } catch {}
+}
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
@@ -181,6 +199,8 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
   const [attachedFile, setAttachedFile] = useState(null) // { name, text }
   const [messagesWithFile, setMessagesWithFile] = useState({}) // { msgId: filename }
   const [uploadingFile, setUploadingFile] = useState(false)
+  const [pendingFile, setPendingFile] = useState(null) // File aguardando consentimento
+  const [showPdfConsent, setShowPdfConsent] = useState(false)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -268,6 +288,16 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
       return
     }
 
+    if (user?.id && !hasPdfConsent(user.id)) {
+      setPendingFile(file)
+      setShowPdfConsent(true)
+      return
+    }
+
+    await processFile(file)
+  }
+
+  async function processFile(file) {
     setUploadingFile(true)
     try {
       const text = await extractTextFromPDF(file)
@@ -618,6 +648,24 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
             <PricingModal
         open={showPricing}
         onClose={() => setShowPricing(false)}
+      />
+
+      <PDFConsentModal
+        open={showPdfConsent}
+        onCancel={() => {
+          setShowPdfConsent(false)
+          setPendingFile(null)
+          if (fileInputRef.current) fileInputRef.current.value = ''
+        }}
+        onAccept={async () => {
+          setShowPdfConsent(false)
+          if (user?.id) setPdfConsent(user.id)
+          if (pendingFile) {
+            const file = pendingFile
+            setPendingFile(null)
+            await processFile(file)
+          }
+        }}
       />
     </div>
   )

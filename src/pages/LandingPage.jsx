@@ -2,6 +2,7 @@ import { useState, useEffect, Fragment } from 'react'
 import { ChevronDown, Check, X, Menu, X as XIcon, MessageCircle, Sparkles } from 'lucide-react'
 import { PRICING, CHECKOUT_URLS } from '../lib/config'
 import AgentIcon from '../components/AgentIcon'
+import CookieBanner from '../components/CookieBanner'
 
 const FAQ_ITEMS = [
   {
@@ -605,6 +606,8 @@ export default function LandingPage({ onSwitch }) {
           </div>
         </div>
       </footer>
+
+      <CookieBanner onOpenPrivacy={() => onSwitch('privacidade')} />
     </div>
   )
 }
