@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react'
-import { supabase, getOrCreateUserProfile, getTokenUsage } from './supabase'
+import { supabase, getOrCreateUserProfile, getTokenUsage, logAuditEvent } from './supabase'
 import { isDemoMode } from './demo'
 import { DEMO_USER, DEMO_PROFILE, DEMO_TOKEN_USAGE } from './demoData'
 
@@ -38,6 +38,15 @@ export function AuthProvider({ children }) {
         setSession(sess)
         if (sess?.user) {
           loadProfile(sess.user.id)
+          if (event === 'SIGNED_IN') {
+            logAuditEvent('auth.signed_in', { metadata: { provider: sess.user.app_metadata?.provider ?? 'email' } })
+          }
+          if (event === 'PASSWORD_RECOVERY') {
+            logAuditEvent('auth.password_recovery_started')
+          }
+          if (event === 'USER_UPDATED') {
+            logAuditEvent('auth.user_updated')
+          }
         } else {
           profileLoaded.current = false
           setProfile(null)
