@@ -12,7 +12,7 @@ const DOCS_MAP: Record<AgentType, string> = {
 const ALLOWED_ORIGINS = new Set([
   "https://colmeiainfantil.com.br",
   "https://www.colmeiainfantil.com.br",
-  "http://localhost:5173",
+  "http://localhost:3006",
 ]);
 
 function corsFor(req: Request): Record<string, string> {
