@@ -88,9 +88,11 @@ export function AuthProvider({ children }) {
     } catch (e) {}
   }
 
+  const isAdmin = profile?.role === 'admin'
   const isSubscribed = Boolean(
-    profile?.subscription_active &&
-    (!profile?.current_period_end || new Date(profile.current_period_end) > new Date())
+    isAdmin ||
+    (profile?.subscription_active &&
+     (!profile?.current_period_end || new Date(profile.current_period_end) > new Date()))
   )
 
   return (
@@ -101,6 +103,7 @@ export function AuthProvider({ children }) {
       tokenUsage,
       loading,
       isSubscribed,
+      isAdmin,
       refreshProfile,
       refreshTokenUsage,
     }}>

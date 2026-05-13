@@ -85,7 +85,7 @@ Deno.serve(async (req: Request) => {
 
     const { data: userData, error: userDataError } = await supabase
       .from("users")
-      .select("subscription_active, plan_type")
+      .select("subscription_active, plan_type, role")
       .eq("user_auth_id", user_auth_id)
       .single();
 
@@ -93,7 +93,8 @@ Deno.serve(async (req: Request) => {
       return jsonError(403, "user_not_found", corsHeaders);
     }
 
-    if (!userData.subscription_active) {
+    const isAdmin = userData.role === "admin";
+    if (!isAdmin && !userData.subscription_active) {
       return jsonError(403, "subscription_required", corsHeaders);
     }
 
