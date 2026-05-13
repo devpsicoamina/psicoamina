@@ -25,6 +25,15 @@ function corsFor(req: Request): Record<string, string> {
   };
 }
 
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
 serve(async (req) => {
   const corsHeaders = corsFor(req);
 
@@ -33,31 +42,44 @@ serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-    }
-    const jwt = authHeader.replace("Bearer ", "");
+    const cronSecret = Deno.env.get("CRON_SECRET");
+    const providedCronSecret = req.headers.get("X-Cron-Secret");
+    const cronAuthorized = !!(cronSecret && cronSecret.length >= 16 &&
+                              providedCronSecret &&
+                              constantTimeEqual(providedCronSecret, cronSecret));
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      { global: { headers: { Authorization: `Bearer ${jwt}` } } }
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
-      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-    }
+    if (!cronAuthorized) {
+      const authHeader = req.headers.get("Authorization");
+      if (!authHeader) {
+        return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+      }
+      const jwt = authHeader.replace("Bearer ", "");
 
-    const { data: profile, error: profileError } = await supabase
-      .from("users")
-      .select("role")
-      .eq("user_auth_id", user.id)
-      .maybeSingle();
+      const userSupabase = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+        { global: { headers: { Authorization: `Bearer ${jwt}` } } }
+      );
 
-    if (profileError || profile?.role !== "admin") {
-      return new Response("Forbidden", { status: 403, headers: corsHeaders });
+      const { data: { user }, error: userError } = await userSupabase.auth.getUser();
+      if (userError || !user) {
+        return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+      }
+
+      const { data: profile, error: profileError } = await userSupabase
+        .from("users")
+        .select("role")
+        .eq("user_auth_id", user.id)
+        .maybeSingle();
+
+      if (profileError || profile?.role !== "admin") {
+        return new Response("Forbidden", { status: 403, headers: corsHeaders });
+      }
     }
 
     const { agentType } = await req.json();
