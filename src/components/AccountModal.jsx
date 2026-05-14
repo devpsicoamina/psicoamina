@@ -279,7 +279,7 @@ export default function AccountModal({ open, onClose }) {
                 </button>
 
                 <a
-                  href="https://wa.me/5500000000000"
+                  href="https://wa.me/5541999192683"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center gap-3 px-4 py-4 rounded-xl border-2 border-gray-100 hover:border-primary-200 hover:bg-bg-alternate transition text-left"

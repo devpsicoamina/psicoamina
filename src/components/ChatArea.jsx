@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import * as pdfjsLib from 'pdfjs-dist'
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { Check, Copy, Menu, FileText, X, Loader2, Upload, ArrowRight } from 'lucide-react'
-import { getMessages, insertMessage, callChatAI, saveFileToChat } from '../lib/supabase'
+import { getMessages, insertMessage, callChatAI, saveFileToChat, clearChatAttachment } from '../lib/supabase'
 import { getAgent, AGENTS } from '../lib/agents'
 import { useAuth } from '../lib/AuthContext'
 import AgentIcon from './AgentIcon'
@@ -57,12 +57,16 @@ function formatTime(dateStr) {
   return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 }
 
-// Typing effect component — reveals text progressively then renders full markdown
-function TypewriterText({ text, speed = 12, onDone }) {
+// Typing effect: revela o texto progressivamente já renderizando como Markdown
+// (não mostra `**asterisco**` cru pro usuário). Dispara onTick a cada chunk
+// pra o pai conseguir rolar o scroll automaticamente.
+function TypewriterText({ text, speed = 12, onDone, onTick }) {
   const [charIndex, setCharIndex] = useState(0)
   const [done, setDone] = useState(false)
   const requestRef = useRef(null)
   const lastTimeRef = useRef(0)
+  const onTickRef = useRef(onTick)
+  onTickRef.current = onTick
 
   useEffect(() => {
     setCharIndex(0)
@@ -83,8 +87,10 @@ function TypewriterText({ text, speed = 12, onDone }) {
           const next = prev + charsToAdd
           if (next >= text.length) {
             setDone(true)
+            onTickRef.current?.()
             return text.length
           }
+          onTickRef.current?.()
           return next
         })
         lastTimeRef.current = timestamp
@@ -102,20 +108,14 @@ function TypewriterText({ text, speed = 12, onDone }) {
     if (done) onDone?.()
   }, [done])
 
-  if (done) {
-    return (
-      <div className="markdown-content text-sm">
-        <ReactMarkdown>{text}</ReactMarkdown>
-      </div>
-    )
-  }
-
-  // While typing, show plain text with a blinking cursor
-  const visible = text.slice(0, charIndex)
+  // Sempre renderiza como Markdown (ReactMarkdown lida bem com markdown parcial).
+  const visible = done ? text : text.slice(0, charIndex)
   return (
-    <div className="text-sm whitespace-pre-wrap leading-relaxed">
-      {visible}
-      <span className="inline-block w-0.5 h-4 bg-primary-600 animate-pulse ml-0.5 align-text-bottom" />
+    <div className="markdown-content text-base relative">
+      <ReactMarkdown>{visible}</ReactMarkdown>
+      {!done && (
+        <span className="inline-block w-0.5 h-4 bg-primary-600 animate-pulse ml-0.5 align-text-bottom" />
+      )}
     </div>
   )
 }
@@ -409,10 +409,16 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
     return (
       <div className="flex-1 flex items-center justify-center bg-bg-chat p-6">
         <div className="text-center max-w-lg animate-slide-up">
+          <img
+            src="/abelha.png"
+            alt=""
+            className="w-28 md:w-32 mx-auto mb-5 drop-shadow-md select-none"
+            draggable={false}
+          />
           <h2 className="text-2xl md:text-3xl font-semibold text-primary-600 mb-3 leading-tight">
             Olá {userName}, como podemos te ajudar?
           </h2>
-          <p className="text-secondary mb-10">
+          <p className="text-base text-secondary mb-10">
             Escolha um de nossos agentes para começar uma conversa
           </p>
 
@@ -430,7 +436,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
                   <AgentIcon icon={a.icon} size={20} className="transition-colors" style={{ color: a.color }} />
                 </div>
                 <h3 className="text-sm font-semibold text-text-primary mb-1">{a.label}</h3>
-                <p className="text-xs text-secondary leading-relaxed">{a.description}</p>
+                <p className="text-sm text-secondary leading-relaxed">{a.description}</p>
               </button>
             ))}
           </div>
@@ -513,20 +519,21 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
                         <span className="text-xs text-primary-600 font-medium truncate">{messagesWithFile[msg.id]}</span>
                       </div>
                     )}
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                    <p className="text-base whitespace-pre-wrap leading-relaxed">{msg.message}</p>
                   </>
                 ) : msg.id === typingMessageId ? (
                   <TypewriterText
                     text={msg.message}
                     speed={12}
                     onDone={() => setTypingMessageId(null)}
+                    onTick={() => messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' })}
                   />
                 ) : (
-                  <div className="markdown-content text-sm">
+                  <div className="markdown-content text-base">
                     <ReactMarkdown>{msg.message}</ReactMarkdown>
                   </div>
                 )}
-                <p className={`text-[10px] mt-1.5 ${
+                <p className={`text-xs mt-1.5 ${
                   msg.sender === 'human' ? 'text-secondary/50 text-right' : 'text-secondary/50'
                 }`}>
                   {formatTime(msg.created_at)}
@@ -567,11 +574,21 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
             <div className="flex items-center gap-2 px-3 py-2 bg-primary-50 rounded-xl mb-2">
               <FileText className="w-5 h-5 text-primary-600 flex-shrink-0" />
               <span className="text-sm text-primary-600 font-medium truncate flex-1">{attachedFile.name}</span>
-              <span className="text-[10px] text-secondary flex-shrink-0">
+              <span className="text-xs text-secondary flex-shrink-0">
                 {(attachedFile.text.length / 1000).toFixed(0)}k chars
               </span>
               <button
-                onClick={() => setAttachedFile(null)}
+                onClick={async () => {
+                  setAttachedFile(null)
+                  if (chat?.id && user?.id) {
+                    try {
+                      await clearChatAttachment(chat.id, user.id)
+                      onChatsChange?.()
+                    } catch (e) {
+                      console.error('clearChatAttachment failed:', e)
+                    }
+                  }
+                }}
                 className="text-secondary hover:text-accent-error transition flex-shrink-0"
                 title="Remover arquivo"
               >
@@ -621,7 +638,7 @@ export default function ChatArea({ chat, onOpenSidebar, onChatsChange }) {
             </button>
           </div>
         </div>
-        <p className="text-[10px] text-secondary/40 text-center mt-2">
+        <p className="text-xs text-secondary/40 text-center mt-2">
           © 2026 ColméIA Infantil. Todos os Direitos Reservados.
         </p>
       </div>
