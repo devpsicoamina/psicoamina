@@ -111,13 +111,14 @@ function Hero({ onSwitch }) {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-text-primary tracking-tight leading-[1.1]">
             Mais tempo com a criança.{' '}
             <span className="bg-clip-text text-transparent" style={{ backgroundImage: BRAND_GRADIENT }}>
-              Menos tempo planejando.
+              Menos tempo no planejamento.
             </span>
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
-            Três agentes de IA pensados pra rotina da psicóloga infantil: planejam sessões a partir
-            de fichas em PDF, escrevem conteúdo pras suas redes e ajudam a atrair pacientes.
-            Sem prompts complicados — é só conversar.
+            A ColméIA foi feita pra psicóloga infantil que ama o que faz, mas chega cansada no fim
+            do dia. Três assistentes que ajudam você a planejar sessão, criar conteúdo pras suas redes
+            e atrair pacientes — sem precisar abrir mil abas, copiar e colar texto, ou estudar prompt.
+            É só conversar como se fosse com uma colega.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
@@ -186,20 +187,20 @@ function HeroMockup() {
 function PainSolution() {
   const items = [
     {
-      pain: 'Você passa o sábado inteiro planejando as sessões da semana — e nem sempre o plano funciona.',
-      solution: 'Anexe a ficha clínica em PDF e o agente "Planejamento de sessões" estrutura técnicas, materiais e etapas baseadas no caso.',
+      pain: 'Seu sábado vira "dia de planejar a semana". Você ama o que faz, mas queria que isso não tomasse o seu descanso.',
+      solution: 'Manda o caso pra ColméIA — pode até anexar a ficha em PDF se quiser. Em minutos ela sugere objetivos, técnicas e atividades pra cada sessão da semana, no seu estilo.',
       icon: <Brain className="h-5 w-5" />,
       featureLabel: 'Planejamento de sessões',
     },
     {
-      pain: '"Preciso postar mais", mas nunca sabe o quê. O perfil fica parado, paciente novo não chega.',
-      solution: 'O agente "Criação de conteúdo" sugere posts, legendas e ideias de carrossel já com tom de psicóloga infantil — é só ajustar e publicar.',
+      pain: '"Eu sei que precisaria postar mais no Instagram, mas não sei o quê. Quando paro pra pensar, dá branco." E os meses passam com o perfil parado.',
+      solution: 'Pede um cronograma de conteúdo, ideias de carrossel, legenda pra um caso real — sai pronto pra você ajustar e publicar. No tom de psicóloga, não de "guru digital".',
       icon: <Megaphone className="h-5 w-5" />,
       featureLabel: 'Criação de conteúdo',
     },
     {
-      pain: 'Já tentou anúncio, indicação, panfleto — e o consultório continua com agenda aberta.',
-      solution: '"Captação de pacientes" analisa seu perfil e cria estratégia: canais, mensagens-âncora, copy pros stories e bio. Passo a passo.',
+      pain: 'Você é boa no consultório, mas captar paciente sempre foi um nó. Já tentou panfleto, anúncio, indicação — e a agenda continua aberta.',
+      solution: 'A ColméIA monta um plano de captação no seu contexto: onde sua mãe-cliente está, o que falar pra atrair, como aparecer sem se sentir vendedora. Passo a passo.',
       icon: <Heart className="h-5 w-5" />,
       featureLabel: 'Captação de pacientes',
     },
@@ -222,7 +223,8 @@ function PainSolution() {
             Você já viveu isso?
           </h2>
           <p className="mt-4 text-lg text-text-secondary">
-            Três dores que toda psicóloga infantil sente — e o agente da ColméIA que resolve cada uma.
+            Três dores que a gente sabe que você sente — porque o produto foi feito junto com psicólogas
+            infantis reais.
           </p>
         </div>
 
@@ -269,27 +271,27 @@ function FeaturesShowcase() {
   const blocks = [
     {
       tag: 'Conversa natural',
-      title: 'Como se você estivesse no WhatsApp',
-      desc: 'Esqueça prompts complexos. Cada agente é especialista no seu tema — você só digita o que precisa e ele entende o contexto.',
+      title: 'Você conversa, ela entende',
+      desc: 'Sem aprender comando, sem precisar formatar a pergunta de jeito nenhum. É só falar como você falaria com uma colega: "preciso de uma sessão pra criança de 4 anos com seletividade alimentar"— e a ColméIA responde no contexto.',
       bullets: [
-        'Três agentes especializados, cada um com expertise própria',
-        'Histórico organizado por conversa',
-        'Tom e linguagem ajustados pra psicóloga infantil',
-        'Sem aprender comando nenhum — é só escrever',
+        'Cada agente é especialista no seu tema — você só fala o que precisa',
+        'Cada conversa fica salva pra você retomar depois',
+        'A linguagem é a sua — não é "consultor digital"',
+        'Funciona pelo navegador, sem instalar nada',
       ],
       icon: <MessageCircle className="h-5 w-5" />,
       image: '/screenshots/chat-planejamento.png',
       imageAlt: 'Chat da ColméIA respondendo sobre planejamento de sessão',
     },
     {
-      tag: 'Documentos da paciente',
-      title: 'Anexe a ficha clínica e tenha um plano em segundos',
-      desc: 'Faça upload do PDF (anamnese, evolução, ficha de triagem) e o agente usa o conteúdo como contexto pra sugerir abordagens, técnicas e materiais.',
+      tag: 'Anexar fichas',
+      title: 'Manda a ficha da criança em PDF, sai um plano',
+      desc: 'Tem uma anamnese, evolução ou ficha de triagem em PDF? Anexa direto na conversa. A ColméIA lê e usa aquele conteúdo como base pra sugerir abordagens — você não precisa digitar nada do que tá no documento.',
       bullets: [
-        'Aceita PDFs de até 20MB',
-        'Extração local de texto — o arquivo não sai do seu navegador antes',
-        'Você decide se quer enviar conteúdo de cada documento',
-        'Recomendamos anonimizar dados sensíveis antes do envio',
+        'Aceita arquivos PDF de até 20MB',
+        'O texto do PDF é processado pra dar contexto ao agente',
+        'Recomendamos remover nome, CPF e data de nascimento antes — a gente avisa antes do envio',
+        'Você decide se quer ou não enviar cada documento',
       ],
       icon: <FileText className="h-5 w-5" />,
       image: '/screenshots/pdf-anexado.png',
@@ -297,28 +299,28 @@ function FeaturesShowcase() {
       reverse: true,
     },
     {
-      tag: 'Privacidade e segurança',
-      title: 'Suas conversas são suas',
-      desc: 'Cada conta é totalmente isolada. Suas conversas não são compartilhadas, não treinamos modelo público com elas, e você pode exportar ou apagar tudo a qualquer momento.',
+      tag: 'Privacidade e sigilo',
+      title: 'O que você compartilha aqui fica só com você',
+      desc: 'Cada conta é totalmente separada das outras. Ninguém da equipe lê suas conversas, nenhuma colega vê o que você escreve, e você pode apagar tudo a qualquer momento.',
       bullets: [
-        'Banco PostgreSQL com Row Level Security',
-        'OpenAI não usa dados da API pra treinar modelos',
-        'Export completo dos seus dados em JSON',
-        'Exclusão definitiva da conta com um clique',
+        'Suas conversas ficam só na sua conta — ninguém mais acessa',
+        'Os agentes não compartilham seu histórico com outras psicólogas',
+        'Você baixa uma cópia de tudo o que escreveu quando quiser',
+        'Pode apagar sua conta inteira com um clique — sem burocracia',
       ],
       icon: <ShieldCheck className="h-5 w-5" />,
       image: '/screenshots/privacidade.png',
       imageAlt: 'Aba Privacidade da conta com botões de exportar e excluir dados',
     },
     {
-      tag: 'Quando você precisar',
-      title: 'Disponível 24h, sem agendar consulta',
-      desc: 'Sessão de domingo à noite? Ideia de post no fim do dia? Insight no caminho do consultório? O agente está pronto — não tem horário comercial nem espera.',
+      tag: 'Sempre disponível',
+      title: 'Quando bater a dúvida, ela tá pronta',
+      desc: 'Aquele insight no caminho do consultório, a sessão que você quer revisar antes de dormir, a ideia de post no fim do dia — não precisa esperar horário comercial nem agendar reunião com ninguém. A ColméIA tá sempre ali.',
       bullets: [
-        'Acesso ilimitado pelo navegador',
+        'Acesso 24 horas, todos os dias — sem fila, sem espera',
         'Funciona no celular, tablet e computador',
-        'Cada conversa fica salva pra você retomar quando quiser',
-        'Sem agendamento, sem fila',
+        'Cada conversa salva, você pode voltar e continuar de onde parou',
+        'Pode usar quando quiser, quantas vezes quiser',
       ],
       icon: <Clock className="h-5 w-5" />,
       image: '/screenshots/pensando.png',
@@ -417,14 +419,14 @@ function Comparison() {
       without: 'Conselhos vagos pra "qualquer profissional liberal". Não considera quem é seu público.',
     },
     {
-      topic: 'Privacidade dos seus dados',
-      with: 'RLS no banco, conta isolada, exportação em JSON, exclusão definitiva em 1 clique.',
-      without: 'Conversas em conta pessoal, sem controle granular. Risco de vazar em prompt compartilhado.',
+      topic: 'Sigilo do conteúdo',
+      with: 'Sua conta é sua. Ninguém da equipe acessa suas conversas, você apaga tudo quando quiser.',
+      without: 'Tudo na mesma conta pessoal de IA. Risco de aparecer em sugestão pra outra pessoa por engano.',
     },
     {
       topic: 'Custo previsível',
-      with: 'Mensalidade fixa. R$ 19,90/mês. Sem cobrança por uso.',
-      without: 'Plano da OpenAI por usuário (R$ 100+/mês). Ou conta zero free com limite frustrante.',
+      with: 'R$ 19,90 por mês. Cobrança fixa, sem surpresa, sem "limite de uso" chato.',
+      without: 'Plano caro de assistente de IA (R$ 100+/mês). Ou versão grátis que trava a cada 10 mensagens.',
     },
   ]
 
@@ -493,7 +495,7 @@ function FeaturesGrid() {
     { icon: <Layers className="h-5 w-5" />, label: 'Histórico organizado' },
     { icon: <Clock className="h-5 w-5" />, label: 'Disponível 24h' },
     { icon: <Calendar className="h-5 w-5" />, label: 'Sem agenda, sem fila' },
-    { icon: <ShieldCheck className="h-5 w-5" />, label: 'Dados isolados (RLS)' },
+    { icon: <ShieldCheck className="h-5 w-5" />, label: 'Sua conta é só sua' },
     { icon: <Lock className="h-5 w-5" />, label: 'Conta protegida' },
     { icon: <Zap className="h-5 w-5" />, label: 'Resposta em segundos' },
     { icon: <Users className="h-5 w-5" />, label: 'Suporte humano via WhatsApp' },
@@ -651,8 +653,8 @@ function Faq() {
       a: 'Pelo Hotmart, com cartão de crédito ou PIX. Acesso imediato após confirmação. Cancelamento direto pela plataforma, sem multa.',
     },
     {
-      q: 'Meus dados ficam seguros?',
-      a: 'Sim. Cada conta tem isolamento total no banco (Row Level Security), suas conversas não são compartilhadas com ninguém, e a OpenAI (que processa as respostas) não usa dados via API pra treinar modelos. Você pode exportar tudo em JSON ou apagar a conta inteira a qualquer momento.',
+      q: 'Minhas conversas ficam seguras?',
+      a: 'Ficam. Cada conta é completamente separada — ninguém da equipe lê suas conversas, e nenhuma colega psicóloga vê o que você escreveu. Você pode baixar uma cópia de tudo a qualquer momento, ou apagar sua conta inteira com um clique.',
     },
     {
       q: 'Os agentes substituem supervisão clínica?',

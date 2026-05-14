@@ -1,15 +1,14 @@
 import { useState } from 'react'
-import { X, KeyRound, LogOut, MessageCircle, Download, Trash2, AlertTriangle } from 'lucide-react'
+import { X, KeyRound, LogOut, MessageCircle, Download, Trash2, AlertTriangle, Sparkles } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { supabase, updateUserProfile, signOut, resetPassword, logAuditEvent } from '../lib/supabase'
 import { PLAN_LIMITS } from '../lib/config'
 import PricingModal from './PricingModal'
-import AdminPanel from './AdminPanel'
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export default function AccountModal({ open, onClose }) {
+export default function AccountModal({ open, onClose, onOpenFeedback }) {
   const { user, profile, isSubscribed, isAdmin } = useAuth()
   const [tab, setTab] = useState('info')
   const [name, setName] = useState(profile?.fullname || '')
@@ -158,16 +157,6 @@ export default function AccountModal({ open, onClose }) {
             >
               Privacidade
             </button>
-            {isAdmin && (
-              <button
-                onClick={() => setTab('admin')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                  tab === 'admin' ? 'bg-primary-600 text-white' : 'text-secondary hover:bg-gray-100'
-                }`}
-              >
-                Admin
-              </button>
-            )}
           </div>
 
                     <div className="p-6">
@@ -293,6 +282,19 @@ export default function AccountModal({ open, onClose }) {
                   </div>
                 </a>
 
+                <button
+                  onClick={() => onOpenFeedback?.()}
+                  className="w-full flex items-center gap-3 px-4 py-4 rounded-xl border-2 border-gray-100 hover:border-primary-200 hover:bg-bg-alternate transition text-left"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-accent-yellow/20 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">Enviar feedback</p>
+                    <p className="text-xs text-secondary">Sugestões, elogios ou reportar um bug</p>
+                  </div>
+                </button>
+
                 <div className="pt-4 border-t border-gray-100">
                   <button
                     onClick={handleSignOut}
@@ -392,7 +394,6 @@ export default function AccountModal({ open, onClose }) {
                 </div>
               </div>
             )}
-            {tab === 'admin' && isAdmin && <AdminPanel />}
           </div>
         </div>
       </div>

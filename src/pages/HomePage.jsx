@@ -11,9 +11,13 @@ import SubscriptionGate from '../components/SubscriptionGate'
 import PaymentSuccessModal from '../components/PaymentSuccessModal'
 import OnboardingTutorial from '../components/OnboardingTutorial'
 import LGPDConsentModal, { LGPD_CONSENTS_VERSION } from '../components/LGPDConsentModal'
+import FeedbackModal from '../components/FeedbackModal'
+import AdminPage from './AdminPage'
 
 export default function HomePage() {
-  const { user, profile, refreshProfile } = useAuth()
+  const { user, profile, refreshProfile, feedbackTrigger, setFeedbackTrigger } = useAuth()
+  const [adminTab, setAdminTab] = useState(null) // null = não tá no admin; 'users'|'feedbacks'|'costs'
+  const [feedbackSource, setFeedbackSource] = useState(null) // se truthy, FeedbackModal aberto
   const [chats, setChats] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(() => {
@@ -68,6 +72,23 @@ export default function HomePage() {
     return () => window.removeEventListener('keydown', handleKey)
   }, [])
 
+  // Trigger automático de feedback (chat-ai dispara via window event quando msg_count===10)
+  useEffect(() => {
+    function onTrigger(e) {
+      setFeedbackSource(`modal-${e.detail}`)
+    }
+    window.addEventListener('feedback-trigger', onTrigger)
+    return () => window.removeEventListener('feedback-trigger', onTrigger)
+  }, [])
+
+  // Trigger de login (3 ou 10 logins) — vem do AuthContext
+  useEffect(() => {
+    if (feedbackTrigger) {
+      setFeedbackSource(`modal-${feedbackTrigger}`)
+      setFeedbackTrigger(null)
+    }
+  }, [feedbackTrigger])
+
   function handleSearchSelect(chat) {
     setSelectedChat(chat)
     setSearchOpen(false)
@@ -106,19 +127,31 @@ export default function HomePage() {
         <Sidebar
           chats={chats}
           selectedChatId={selectedChat?.id}
-          onSelectChat={(chat) => setSelectedChat(chat)}
+          onSelectChat={(chat) => { setAdminTab(null); setSelectedChat(chat) }}
           onChatsChange={loadChats}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           onOpenSearch={() => setSearchOpen(true)}
           onOpenAccount={() => setAccountOpen(true)}
           onGoHome={() => {
+            setAdminTab(null)
             setSelectedChat(null)
             if (window.innerWidth < 768) setSidebarOpen(false)
           }}
+          onOpenAdmin={(tab) => {
+            setAdminTab(tab)
+            setSelectedChat(null)
+            if (window.innerWidth < 768) setSidebarOpen(false)
+          }}
+          currentAdminTab={adminTab}
         />
 
-        {selectedChat ? (
+        {adminTab ? (
+          <AdminPage
+            initialTab={adminTab}
+            onOpenSidebar={() => setSidebarOpen(true)}
+          />
+        ) : selectedChat ? (
           <ChatArea
             chat={selectedChat}
             onOpenSidebar={() => setSidebarOpen(true)}
@@ -146,6 +179,10 @@ export default function HomePage() {
         <AccountModal
           open={accountOpen}
           onClose={() => setAccountOpen(false)}
+          onOpenFeedback={() => {
+            setAccountOpen(false)
+            setFeedbackSource('manual')
+          }}
         />
 
         <PaymentSuccessModal
@@ -157,6 +194,12 @@ export default function HomePage() {
           open={!!user && !!profile && profile.lgpd_consents_version !== LGPD_CONSENTS_VERSION}
           userId={user?.id}
           onAccepted={refreshProfile}
+        />
+
+        <FeedbackModal
+          open={!!feedbackSource}
+          source={feedbackSource}
+          onClose={() => setFeedbackSource(null)}
         />
 
       </div>

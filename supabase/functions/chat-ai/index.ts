@@ -278,6 +278,16 @@ Deno.serve(async (req: Request) => {
       message: agentMessage,
     });
 
+    // Incrementa contador de mensagens (pra trigger de feedback). Best-effort —
+    // se falhar, não bloqueia a resposta.
+    let feedbackTrigger: string | null = null;
+    try {
+      const { data: trig } = await supabase.rpc("record_message_event");
+      if (trig?.trigger) feedbackTrigger = trig.trigger;
+    } catch (e) {
+      // intencionalmente silencioso
+    }
+
     if (createTitle === true) {
       try {
         const titleRes = await fetch(
@@ -319,7 +329,7 @@ Deno.serve(async (req: Request) => {
     }
 
     return new Response(
-      JSON.stringify({ reply: agentMessage }),
+      JSON.stringify({ reply: agentMessage, feedback_trigger: feedbackTrigger }),
       {
         headers: {
           ...corsHeaders,

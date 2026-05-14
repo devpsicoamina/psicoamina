@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, X, ChevronDown, Loader2, Plus, Pencil, Trash2, Settings } from 'lucide-react'
+import { Search, X, ChevronDown, Loader2, Plus, Pencil, Trash2, Settings, Users, MessageSquare, Sparkles } from 'lucide-react'
 import { AGENTS } from '../lib/agents'
 import { createChat, updateChatTitle, deleteChat, signOut } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
@@ -17,8 +17,10 @@ export default function Sidebar({
   onOpenSearch,
   onOpenAccount,
   onGoHome,
+  onOpenAdmin,
+  currentAdminTab,
 }) {
-  const { user, profile, tokenUsage } = useAuth()
+  const { user, profile, tokenUsage, isAdmin } = useAuth()
   const [expandedAgent, setExpandedAgent] = useState(null)
   const [editingChatId, setEditingChatId] = useState(null)
   const [editTitle, setEditTitle] = useState('')
@@ -232,6 +234,35 @@ export default function Sidebar({
               </div>
             )
           })}
+
+          {/* Seção PLATAFORMA — só pra admin */}
+          {isAdmin && (
+            <div className="mt-6 border-t border-primary-50 pt-4">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-secondary px-3 mb-2">
+                Plataforma
+              </p>
+              {[
+                { key: 'users', label: 'Todos usuários', icon: Users },
+                { key: 'feedbacks', label: 'Feedbacks', icon: MessageSquare },
+                { key: 'costs', label: 'Uso da IA', icon: Sparkles },
+              ].map((item) => {
+                const Icon = item.icon
+                const active = currentAdminTab === item.key
+                return (
+                  <button
+                    key={item.key}
+                    onClick={() => onOpenAdmin?.(item.key)}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 transition text-left ${
+                      active ? 'bg-primary-50 text-primary-600' : 'text-text-primary hover:bg-bg-alternate'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
 
         {/* User profile footer */}

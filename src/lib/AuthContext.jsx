@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [profile, setProfile] = useState(null)
   const [tokenUsage, setTokenUsage] = useState({ tokens_used: 0, progress_bar_value: 0 })
+  const [feedbackTrigger, setFeedbackTrigger] = useState(null)
   const [loading, setLoading] = useState(true)
   const profileLoaded = useRef(false)
   const loadingProfile = useRef(false)
@@ -40,6 +41,10 @@ export function AuthProvider({ children }) {
           loadProfile(sess.user.id)
           if (event === 'SIGNED_IN') {
             logAuditEvent('auth.signed_in', { metadata: { provider: sess.user.app_metadata?.provider ?? 'email' } })
+            // Incrementa contador de login + checa trigger de feedback
+            supabase.rpc('record_login_event')
+              .then(({ data }) => { if (data?.trigger) setFeedbackTrigger(data.trigger) })
+              .catch(() => {})
           }
           if (event === 'PASSWORD_RECOVERY') {
             logAuditEvent('auth.password_recovery_started')
@@ -115,6 +120,8 @@ export function AuthProvider({ children }) {
       isAdmin,
       refreshProfile,
       refreshTokenUsage,
+      feedbackTrigger,
+      setFeedbackTrigger,
     }}>
       {children}
     </AuthContext.Provider>
