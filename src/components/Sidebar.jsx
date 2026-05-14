@@ -107,11 +107,13 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Token bar */}
-        <TokenBar tokensUsed={tokenUsage?.tokens_used || 0} />
+        {/* Token bar — temporariamente desativado pro usuário final.
+            Custos são acompanhados pelo admin via aba "Custos" no AccountModal.
+            Reativar removendo o comentário abaixo + revertendo o spacing. */}
+        {/* <TokenBar tokensUsed={tokenUsage?.tokens_used || 0} /> */}
 
         {/* Divider */}
-        <div className="mx-4 border-t border-primary-100" />
+        <div className="mx-4 mt-3 border-t border-primary-100" />
 
         {/* Agents & chats */}
         <div className="flex-1 overflow-y-auto px-3 py-3">

@@ -4,12 +4,13 @@ import { useAuth } from '../lib/AuthContext'
 import { supabase, updateUserProfile, signOut, resetPassword, logAuditEvent } from '../lib/supabase'
 import { PLAN_LIMITS } from '../lib/config'
 import PricingModal from './PricingModal'
+import AdminPanel from './AdminPanel'
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export default function AccountModal({ open, onClose }) {
-  const { user, profile, isSubscribed } = useAuth()
+  const { user, profile, isSubscribed, isAdmin } = useAuth()
   const [tab, setTab] = useState('info')
   const [name, setName] = useState(profile?.fullname || '')
   const [saving, setSaving] = useState(false)
@@ -157,6 +158,16 @@ export default function AccountModal({ open, onClose }) {
             >
               Privacidade
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => setTab('admin')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  tab === 'admin' ? 'bg-primary-600 text-white' : 'text-secondary hover:bg-gray-100'
+                }`}
+              >
+                Admin
+              </button>
+            )}
           </div>
 
                     <div className="p-6">
@@ -381,6 +392,7 @@ export default function AccountModal({ open, onClose }) {
                 </div>
               </div>
             )}
+            {tab === 'admin' && isAdmin && <AdminPanel />}
           </div>
         </div>
       </div>

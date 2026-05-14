@@ -30,7 +30,10 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
         </h2>
         <p className="text-secondary mb-8">Como podemos te ajudar hoje?</p>
 
-        {/* Credits card */}
+        {/* Credits card — temporariamente oculto pro usuário final.
+            Custos acompanhados pelo admin via aba "Custos" no AccountModal.
+            Reativar removendo o comentário abaixo. */}
+        {/*
         <div className="bg-white rounded-2xl p-5 shadow-card mb-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-text-primary">Seus créditos</h3>
@@ -60,6 +63,7 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
             </p>
           )}
         </div>
+        */}
 
         {/* Agent cards */}
         <h3 className="text-sm font-semibold text-text-primary mb-3">Iniciar conversa</h3>

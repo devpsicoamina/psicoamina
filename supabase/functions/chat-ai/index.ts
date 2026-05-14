@@ -18,15 +18,20 @@ function corsFor(req: Request): Record<string, string> {
   };
 }
 
-const TOKEN_LIMITS: Record<string, number> = {
-  monthly: 80000,
-  yearly: 100000,
-};
-
 const MAX_USER_MESSAGE_CHARS = 8000;
 const MAX_FILE_CONTEXT_CHARS = 60000;
 const RATE_LIMIT_PER_MIN = 10;
+const RATE_LIMIT_PER_DAY = 500;
 const OPENAI_TIMEOUT_MS = 60_000;
+const MAX_COMPLETION_TOKENS = 1500;
+
+// gpt-4.1-mini pricing (USD per 1M tokens)
+const COST_USD_PER_M = {
+  prompt: 0.40,
+  cached: 0.10,
+  completion: 1.60,
+};
+const MODEL = "gpt-4.1-mini";
 
 function jsonError(status: number, code: string, cors: Record<string, string>) {
   return new Response(
@@ -70,17 +75,31 @@ Deno.serve(async (req: Request) => {
 
     const user_auth_id = user.id;
 
-    const { data: allowed, error: rlError } = await supabase
+    // Per-minute rate limit (10 rpm) — defense against bursts.
+    const { data: allowedMin, error: rlMinError } = await supabase
       .rpc("rate_limit_check", {
-        p_key: `chat-ai:${user_auth_id}`,
+        p_key: `chat-ai:min:${user_auth_id}`,
         p_max: RATE_LIMIT_PER_MIN,
         p_window_sec: 60,
       });
-
-    if (rlError) {
-      console.error("chat-ai rate_limit:", rlError.message);
-    } else if (allowed === false) {
+    if (rlMinError) {
+      console.error("chat-ai rate_limit_min:", rlMinError.message);
+    } else if (allowedMin === false) {
       return jsonError(429, "rate_limit_exceeded", corsHeaders);
+    }
+
+    // Per-day rate limit (500 msgs) — invisible cap to detect abuse without
+    // showing a user-facing quota. Generous for normal use (typical ≤30/day).
+    const { data: allowedDay, error: rlDayError } = await supabase
+      .rpc("rate_limit_check", {
+        p_key: `chat-ai:day:${user_auth_id}`,
+        p_max: RATE_LIMIT_PER_DAY,
+        p_window_sec: 24 * 60 * 60,
+      });
+    if (rlDayError) {
+      console.error("chat-ai rate_limit_day:", rlDayError.message);
+    } else if (allowedDay === false) {
+      return jsonError(429, "daily_limit_reached", corsHeaders);
     }
 
     const { data: userData, error: userDataError } = await supabase
@@ -96,26 +115,6 @@ Deno.serve(async (req: Request) => {
     const isAdmin = userData.role === "admin";
     if (!isAdmin && !userData.subscription_active) {
       return jsonError(403, "subscription_required", corsHeaders);
-    }
-
-    const plan = userData.plan_type ?? "monthly";
-    const tokenLimit = TOKEN_LIMITS[plan] ?? TOKEN_LIMITS.monthly;
-
-    const { data: usageData, error: usageError } = await supabase
-      .from("user_monthly_usage")
-      .select("id, tokens_used")
-      .eq("user_auth_id", user_auth_id)
-      .maybeSingle();
-
-    if (usageError) {
-      console.error("chat-ai usage fetch:", usageError.message);
-      return jsonError(500, "internal_error", corsHeaders);
-    }
-
-    const currentTokens = usageData?.tokens_used ?? 0;
-
-    if (currentTokens >= tokenLimit) {
-      return jsonError(403, "token_limit_reached", corsHeaders);
     }
 
     const payload = await req.json();
@@ -206,7 +205,8 @@ Deno.serve(async (req: Request) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "gpt-4.1-mini",
+            model: MODEL,
+            max_tokens: MAX_COMPLETION_TOKENS,
             messages: [
               ...systemMessages,
               ...historyMessages,
@@ -236,22 +236,40 @@ Deno.serve(async (req: Request) => {
       return jsonError(502, "ai_invalid_response", corsHeaders);
     }
 
-    const tokensUsed = openaiData.usage?.total_tokens ?? 0;
+    const usage = openaiData.usage ?? {};
+    const promptTokens = Number(usage.prompt_tokens ?? 0);
+    const completionTokens = Number(usage.completion_tokens ?? 0);
+    const cachedTokens = Number(
+      usage.prompt_tokens_details?.cached_tokens ?? usage.cached_tokens ?? 0
+    );
+    const billablePromptTokens = Math.max(promptTokens - cachedTokens, 0);
+    const totalTokens = promptTokens + completionTokens;
 
-    const { data: usageAfter, error: incError } = await supabase
-      .rpc("increment_token_usage", {
-        p_user_auth_id: user_auth_id,
-        p_amount: tokensUsed,
-        p_token_limit: tokenLimit,
-      });
+    const costUsd =
+      (billablePromptTokens * COST_USD_PER_M.prompt) / 1_000_000 +
+      (cachedTokens * COST_USD_PER_M.cached) / 1_000_000 +
+      (completionTokens * COST_USD_PER_M.completion) / 1_000_000;
 
-    let newTotal = currentTokens + tokensUsed;
+    // Log granular cost event (admin dashboard reads from here).
+    await supabase.from("ai_usage_events").insert({
+      user_auth_id,
+      agent_type: agentType,
+      model: MODEL,
+      prompt_tokens: promptTokens,
+      cached_prompt_tokens: cachedTokens,
+      completion_tokens: completionTokens,
+      cost_usd: costUsd,
+    });
+
+    // Keep user_monthly_usage in sync for backwards compat (no enforcement now).
+    const { error: incError } = await supabase.rpc("increment_token_usage", {
+      p_user_auth_id: user_auth_id,
+      p_amount: totalTokens,
+      p_token_limit: 1_000_000_000,
+    });
     if (incError) {
       console.error("chat-ai increment_tokens:", incError.message);
-    } else if (typeof usageAfter === "number") {
-      newTotal = usageAfter;
     }
-    const newProgress = Math.min(newTotal / tokenLimit, 1);
 
     await supabase.from("chat_messages").insert({
       chat_id,
@@ -301,12 +319,7 @@ Deno.serve(async (req: Request) => {
     }
 
     return new Response(
-      JSON.stringify({
-        reply: agentMessage,
-        tokens_used: newTotal,
-        tokens_remaining: tokenLimit - newTotal,
-        progress: newProgress,
-      }),
+      JSON.stringify({ reply: agentMessage }),
       {
         headers: {
           ...corsHeaders,

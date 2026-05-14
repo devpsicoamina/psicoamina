@@ -10,9 +10,10 @@ import AccountModal from '../components/AccountModal'
 import SubscriptionGate from '../components/SubscriptionGate'
 import PaymentSuccessModal from '../components/PaymentSuccessModal'
 import OnboardingTutorial from '../components/OnboardingTutorial'
+import LGPDConsentModal, { LGPD_CONSENTS_VERSION } from '../components/LGPDConsentModal'
 
 export default function HomePage() {
-  const { user } = useAuth()
+  const { user, profile, refreshProfile } = useAuth()
   const [chats, setChats] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -125,6 +126,12 @@ export default function HomePage() {
         <PaymentSuccessModal
           open={showPaymentSuccess}
           onClose={() => setShowPaymentSuccess(false)}
+        />
+
+        <LGPDConsentModal
+          open={!!user && !!profile && profile.lgpd_consents_version !== LGPD_CONSENTS_VERSION}
+          userId={user?.id}
+          onAccepted={refreshProfile}
         />
 
       </div>
