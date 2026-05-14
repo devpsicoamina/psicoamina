@@ -16,6 +16,7 @@ export default function Sidebar({
   onClose,
   onOpenSearch,
   onOpenAccount,
+  onGoHome,
 }) {
   const { user, profile, tokenUsage } = useAuth()
   const [expandedAgent, setExpandedAgent] = useState(null)
@@ -89,7 +90,13 @@ export default function Sidebar({
       `}>
         {/* Header */}
         <div className="p-5 flex items-center justify-between">
-          <img src="/wordmark.png" alt="ColméIA Infantil" style={{ height: 52 }} className="object-contain" draggable={false} />
+          <button
+            onClick={onGoHome}
+            className="shrink-0"
+            title="Voltar para a tela inicial"
+          >
+            <img src="/logo-dark.png" alt="ColméIA Infantil" className="h-16 w-auto object-contain" draggable={false} />
+          </button>
 
           <div className="flex items-center gap-1">
             {/* Search button */}

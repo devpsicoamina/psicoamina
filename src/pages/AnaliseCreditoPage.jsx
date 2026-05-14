@@ -5,7 +5,7 @@ export default function AnaliseCreditoPage({ onSwitch }) {
     <div className="min-h-screen bg-[#fef3c7] font-sans flex items-center justify-center px-5">
       <div className="max-w-md w-full text-center">
         <img
-          src="/icone.png"
+          src="/abelha.png"
           alt="ColméIA Infantil"
           className="w-20 mx-auto mb-6"
           draggable={false}

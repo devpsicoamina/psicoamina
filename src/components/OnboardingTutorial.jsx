@@ -34,10 +34,8 @@ function StepIndicator({ current, total }) {
 function Step1() {
   return (
     <div className="flex flex-col items-center text-center px-2">
-      <div className="flex items-end gap-3 mb-8">
-        <img src="/logo-dark.png" alt="ColméIA" className="h-20 md:h-24 object-contain" draggable={false} />
-        <img src="/favicon.png" alt="" className="w-12 md:w-14 -mb-1 drop-shadow-md" draggable={false} />
-      </div>
+      <img src="/logo-dark.png" alt="ColméIA" className="h-20 md:h-24 object-contain mb-8" draggable={false} />
+
       <h2 className="text-2xl md:text-3xl font-extrabold text-primary-600 mb-4 leading-tight">
         Bem-vinda à ColméIA!
       </h2>
@@ -191,7 +189,7 @@ function Step4({ onComplete }) {
       </button>
 
       <img
-        src="/favicon.png"
+        src="/abelha.png"
         alt=""
         className="w-10 opacity-[0.15] mx-auto mt-8 pointer-events-none select-none"
         draggable={false}
