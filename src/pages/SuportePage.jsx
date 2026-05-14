@@ -9,7 +9,7 @@ export default function SuportePage({ onSwitch }) {
           </p>
           <div className="space-y-3">
             <a
-              href="https://wa.me/5500000000000"
+              href="https://wa.me/5541999192683"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-semibold hover:bg-primary-700 transition"

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, Eye, Loader2 } from 'lucide-react'
+import { Check, Eye, Loader2, ArrowLeft } from 'lucide-react'
 import { signUp } from '../lib/supabase'
 import Logo from '../components/Logo'
 
@@ -76,7 +76,14 @@ export default function SignupPage({ onSwitch }) {
   }
 
   return (
-    <div className="min-h-screen bg-bg-alternate flex items-center justify-center p-4">
+    <div className="min-h-screen bg-bg-alternate flex items-center justify-center p-4 relative">
+      <button
+        onClick={() => onSwitch('landing')}
+        className="absolute top-4 left-4 sm:top-6 sm:left-6 inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-primary-600 transition px-3 py-2 rounded-lg hover:bg-white/60"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Voltar
+      </button>
       <div className="bg-white rounded-2xl shadow-card w-full max-w-[420px] p-8 animate-fade-in">
         <div className="flex flex-col items-center mb-8">
           <Logo size="md" dark />

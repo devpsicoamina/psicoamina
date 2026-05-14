@@ -16,7 +16,19 @@ export default function HomePage() {
   const { user, profile, refreshProfile } = useAuth()
   const [chats, setChats] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    // No desktop (≥md), default aberta. No mobile, fechada. Sobrescreve com preferência salva.
+    try {
+      const saved = localStorage.getItem('sidebarOpen')
+      if (saved === 'true') return true
+      if (saved === 'false') return false
+    } catch {}
+    return typeof window !== 'undefined' ? window.innerWidth >= 768 : false
+  })
+
+  useEffect(() => {
+    try { localStorage.setItem('sidebarOpen', String(sidebarOpen)) } catch {}
+  }, [sidebarOpen])
   const [searchOpen, setSearchOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(
@@ -66,11 +78,16 @@ export default function HomePage() {
     if (!user) return
     try {
       const chat = await createChat(user.id, agentType)
-      await loadChats()
+      if (!chat) {
+        console.error('createChat returned empty')
+        return
+      }
+      // Seleciona PRIMEIRO (transição imediata pra ChatArea), depois recarrega a lista em background.
       setSelectedChat(chat)
       if (window.innerWidth < 768) setSidebarOpen(false)
-    } catch {
-      // Silencioso: chat não foi criado, UI não muda
+      loadChats().catch((e) => console.error('loadChats failed:', e))
+    } catch (e) {
+      console.error('handleNewChat failed:', e)
     }
   }
 
@@ -95,6 +112,10 @@ export default function HomePage() {
           onClose={() => setSidebarOpen(false)}
           onOpenSearch={() => setSearchOpen(true)}
           onOpenAccount={() => setAccountOpen(true)}
+          onGoHome={() => {
+            setSelectedChat(null)
+            if (window.innerWidth < 768) setSidebarOpen(false)
+          }}
         />
 
         {selectedChat ? (
@@ -108,6 +129,10 @@ export default function HomePage() {
             chats={chats}
             onOpenSidebar={() => setSidebarOpen(true)}
             onNewChat={handleNewChat}
+            onSelectChat={(chat) => {
+              setSelectedChat(chat)
+              if (window.innerWidth < 768) setSidebarOpen(false)
+            }}
           />
         )}
 

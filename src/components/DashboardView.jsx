@@ -1,10 +1,10 @@
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Menu } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { AGENTS } from '../lib/agents'
 import { PLAN_LIMITS, CREDIT_LIMIT } from '../lib/config'
 import AgentIcon from './AgentIcon'
 
-export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
+export default function DashboardView({ chats, onOpenSidebar, onNewChat, onSelectChat }) {
   const { profile, tokenUsage } = useAuth()
   const userName = profile?.fullname?.split(' ')[0] || 'Psicóloga'
   const planType = profile?.plan_type || 'monthly'
@@ -22,7 +22,20 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
   const recentChats = chats.slice(0, 3)
 
   return (
-    <div className="flex-1 flex items-start md:items-center justify-center bg-bg-chat px-6 pt-6 pb-6 md:p-6 overflow-y-auto overflow-x-hidden">
+    <div className="flex-1 flex flex-col bg-bg-chat overflow-hidden">
+      {/* Header mobile: hamburger pra abrir sidebar (em desktop a sidebar já é visível) */}
+      <header className="md:hidden bg-white/90 backdrop-blur-md border-b border-primary-50 px-5 py-3 flex items-center gap-3 flex-shrink-0">
+        <button
+          onClick={onOpenSidebar}
+          className="text-secondary hover:text-primary-600 transition"
+          aria-label="Abrir menu"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+        <img src="/logo-dark.png" alt="ColméIA" className="h-9 w-auto object-contain" />
+      </header>
+
+      <div className="flex-1 flex items-start md:items-center justify-center px-6 pt-6 pb-6 md:p-6 overflow-y-auto overflow-x-hidden">
       <div className="w-full max-w-2xl animate-slide-up">
         {/* Greeting */}
         <h2 className="text-2xl md:text-3xl font-semibold text-primary-600 mb-1 leading-tight">
@@ -81,7 +94,7 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
                 <AgentIcon icon={a.icon} size={20} style={{ color: a.color }} />
               </div>
               <h4 className="text-sm font-semibold text-text-primary mb-0.5">{a.label}</h4>
-              <p className="text-xs text-secondary leading-relaxed">{a.description}</p>
+              <p className="text-sm text-secondary leading-relaxed">{a.description}</p>
             </button>
           ))}
         </div>
@@ -96,7 +109,7 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
                 return (
                   <button
                     key={chat.id}
-                    onClick={() => onOpenSidebar()}
+                    onClick={() => onSelectChat ? onSelectChat(chat) : onOpenSidebar()}
                     className="w-full bg-white rounded-xl px-4 py-3 shadow-sm hover:shadow-card transition flex items-center gap-3 text-left"
                   >
                     <div
@@ -120,9 +133,10 @@ export default function DashboardView({ chats, onOpenSidebar, onNewChat }) {
         )}
 
         {/* Footer */}
-        <p className="text-[10px] text-secondary/40 text-center">
+        <p className="text-xs text-secondary/40 text-center">
           © 2026 ColméIA Infantil. Todos os Direitos Reservados.
         </p>
+      </div>
       </div>
     </div>
   )
