@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
-import { PLAN_LIMITS, PRICING, CHECKOUT_URLS } from '../lib/config'
+import { PLAN_LIMITS, PRICING, buildCheckoutUrl } from '../lib/config'
 
 export default function PricingModal({ open, onClose }) {
-  const { profile } = useAuth()
+  const { profile, user } = useAuth()
   const [selectedPlan, setSelectedPlan] = useState('monthly')
 
   if (!open) return null
@@ -41,7 +41,7 @@ export default function PricingModal({ open, onClose }) {
   ]
 
   function handleSubscribe() {
-    const url = CHECKOUT_URLS[selectedPlan]
+    const url = buildCheckoutUrl(selectedPlan, profile, user?.email)
     if (url) {
       window.open(url, '_blank')
     }
